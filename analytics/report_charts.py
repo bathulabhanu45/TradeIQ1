@@ -13,15 +13,15 @@ from analytics.revenue import get_monthly_revenue_trend, get_category_performanc
 
 # Color palette matching TradeIQ aesthetics
 PALETTE = {
-    'primary': '#4f46e5',
-    'secondary': '#06b6d4',
-    'success': '#10b981',
-    'warning': '#f59e0b',
-    'danger': '#ef4444',
-    'dark': '#1e293b',
-    'bg': '#ffffff',
+    'primary': '#1e40af',
+    'secondary': '#2563eb',
+    'success': '#15803d',
+    'warning': '#d97706',
+    'danger': '#dc2626',
+    'dark': '#0f172a',
+    'bg': '#faf8f5',
     'grid': '#e2e8f0',
-    'colors': ['#4f46e5', '#06b6d4', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6']
+    'colors': ['#1e40af', '#2563eb', '#3b82f6', '#60a5fa', '#d99b26', '#15803d', '#dc2626']
 }
 
 def generate_monthly_trend_chart(filters=None):
@@ -29,12 +29,12 @@ def generate_monthly_trend_chart(filters=None):
     data = get_monthly_revenue_trend(filters)
     
     fig, ax = plt.subplots(figsize=(8, 3.8), dpi=150)
-    fig.patch.set_facecolor('#ffffff')
-    ax.set_facecolor('#f8fafc')
+    fig.patch.set_facecolor('#faf8f5')
+    ax.set_facecolor('#ffffff')
     
     if data['labels']:
-        ax.plot(data['labels'], data['net_sales'], marker='o', color='#4f46e5', linewidth=2.5, label='Net Sales ($)')
-        ax.fill_between(data['labels'], data['net_sales'], color='#4f46e5', alpha=0.15)
+        ax.plot(data['labels'], data['net_sales'], marker='o', color='#1e40af', linewidth=2.5, label='Net Sales ($)')
+        ax.fill_between(data['labels'], data['net_sales'], color='#1e40af', alpha=0.15)
         
         ax.plot(data['labels'], data['gross_sales'], marker='s', color='#94a3b8', linewidth=1.5, linestyle='--', label='Gross Sales ($)')
         

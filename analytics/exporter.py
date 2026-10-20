@@ -155,7 +155,7 @@ def generate_pdf_report(filters=None):
         fontName='Helvetica-Bold',
         fontSize=8,
         leading=10,
-        textColor=colors.HexColor('#4338ca')
+        textColor=colors.HexColor('#1e40af')
     )
     
     elements = []
@@ -166,7 +166,7 @@ def generate_pdf_report(filters=None):
     filter_desc = f"Filter Scope: Category: <b>{filters.get('category', 'All')}</b> | Region: <b>{filters.get('region', 'All')}</b> | Period: <b>{filters.get('start_date', 'Earliest')} to {filters.get('end_date', 'Latest')}</b>"
     elements.append(Paragraph(f"Generated on {now_str} | {filter_desc}", subtitle_style))
     elements.append(Spacer(1, 10))
-    elements.append(HRFlowable(width="100%", thickness=1.5, color=colors.HexColor('#4f46e5'), spaceBefore=2, spaceAfter=12))
+    elements.append(HRFlowable(width="100%", thickness=1.5, color=colors.HexColor('#1e40af'), spaceBefore=2, spaceAfter=12))
     
     # 2. Executive Highlights Narrative
     curr = kpis['current']

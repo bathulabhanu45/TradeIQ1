@@ -21,7 +21,7 @@
   <form id="filter-form" onsubmit="return false;">
     <div class="filter-grid">
       <div class="filter-group">
-        <label for="filter-month"><i class="fas fa-calendar-days me-1" style="color:var(--wine-red);"></i>Select Month</label>
+        <label for="filter-month"><i class="fas fa-calendar-days me-1 text-primary"></i>Select Month</label>
         <select id="filter-month" class="form-select">
           <option value="All">All Available Months</option>
           {% for m in filter_options.months %}
@@ -30,7 +30,7 @@
         </select>
       </div>
       <div class="filter-group">
-        <label for="filter-category"><i class="fas fa-tags me-1" style="color: var(--sand-gold);"></i>Category</label>
+        <label for="filter-category"><i class="fas fa-tags me-1 text-info"></i>Category</label>
         <select id="filter-category" class="form-select">
           {% for cat in filter_options.categories %}
             <option value="{{ cat }}">{{ cat }}</option>
@@ -38,15 +38,15 @@
         </select>
       </div>
       <div class="filter-group">
-        <label for="filter-start-date"><i class="fas fa-calendar-day me-1" style="color:var(--wine-red);"></i>Start Date</label>
+        <label for="filter-start-date"><i class="fas fa-calendar-day me-1 text-primary"></i>Start Date</label>
         <input type="date" id="filter-start-date" class="form-control" value="{{ filter_options.min_date }}">
       </div>
       <div class="filter-group">
-        <label for="filter-end-date"><i class="fas fa-calendar-check me-1" style="color:var(--wine-red);"></i>End Date</label>
+        <label for="filter-end-date"><i class="fas fa-calendar-check me-1 text-primary"></i>End Date</label>
         <input type="date" id="filter-end-date" class="form-control" value="{{ filter_options.max_date }}">
       </div>
       <div class="filter-group">
-        <label for="filter-region"><i class="fas fa-globe me-1" style="color: var(--sand-gold);"></i>Region</label>
+        <label for="filter-region"><i class="fas fa-globe me-1 text-info"></i>Region</label>
         <select id="filter-region" class="form-select">
           {% for reg in filter_options.regions %}
             <option value="{{ reg }}">{{ reg }}</option>
@@ -178,7 +178,7 @@
     <div class="chart-panel h-100">
       <div class="chart-header">
         <div class="chart-header-left">
-          <h3><i class="fas fa-scale-balanced" style="color: var(--wine-red);"></i> Revenue Deductions Impact</h3>
+          <h3><i class="fas fa-scale-balanced" style="color: var(--royal-blue);"></i> Revenue Deductions Impact</h3>
           <p>Side-by-side comparison of gross sales, discounts, returns, and net sales.</p>
         </div>
       </div>
@@ -229,7 +229,7 @@
           <td class="text-end">${{ "{:,.2f}".format(q.gross) }}</td>
           <td class="text-end" style="color: #F59E0B;">${{ "{:,.2f}".format(q.discounts) }}</td>
           <td class="text-end" style="color: var(--coral);">${{ "{:,.2f}".format(q.returns) }}</td>
-          <td class="text-end fw-bold" style="color: var(--wine-red);">${{ "{:,.2f}".format(q.net) }}</td>
+          <td class="text-end fw-bold" style="color: var(--royal-blue);">${{ "{:,.2f}".format(q.net) }}</td>
           <td class="text-end">{{ q.orders }}</td>
           <td class="text-end">${{ "{:,.2f}".format(q.aov) }}</td>
           <td class="text-end">

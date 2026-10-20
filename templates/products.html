@@ -19,7 +19,7 @@
 <!-- Academic & Accounting Governance Notice (Cost of Goods Sold / Profit Limitation) -->
 <div class="alert alert-dark p-3 rounded-4 mb-4 border" style="background: var(--bg-surface); border-color: var(--border-color) !important; color: var(--text-main);">
   <div class="d-flex gap-3 align-items-start">
-    <div class="p-2 rounded-3" style="background: rgba(114, 47, 55, 0.1); color: var(--wine-red); font-size: 1.2rem;">
+    <div class="p-2 rounded-3" style="background: rgba(30, 64, 175, 0.1); color: var(--royal-blue); font-size: 1.2rem;">
       <i class="fas fa-circle-info"></i>
     </div>
     <div>
@@ -92,15 +92,15 @@
                 </strong>
               </td>
               <td class="text-end fw-semibold">{{ category_data.units[i] }} units</td>
-              <td class="text-end fw-bold" style="color: var(--wine-red);">${{ "{:,.2f}".format(category_data.net_sales[i]) }}</td>
+              <td class="text-end fw-bold" style="color: var(--royal-blue);">${{ "{:,.2f}".format(category_data.net_sales[i]) }}</td>
               <td class="text-end">
-                <span class="badge" style="background: rgba(114, 47, 55, 0.1); color: var(--wine-red); border: 1px solid rgba(114, 47, 55, 0.25);">
+                <span class="badge" style="background: rgba(30, 64, 175, 0.1); color: var(--royal-blue); border: 1px solid rgba(30, 64, 175, 0.25);">
                   {{ category_data.shares[i] }}%
                 </span>
               </td>
               <td>
-                <div class="progress" style="height: 6px; background: var(--sand-soft);">
-                  <div class="progress-bar" style="width: {{ category_data.shares[i] }}%; background: var(--wine-red);"></div>
+                <div class="progress" style="height: 6px; background: var(--cream-surface-alt);">
+                  <div class="progress-bar" style="width: {{ category_data.shares[i] }}%; background: var(--royal-blue);"></div>
                 </div>
               </td>
             </tr>

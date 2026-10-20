@@ -89,5 +89,41 @@ class TestKPICalculations(unittest.TestCase):
         growth_none = calculate_growth_percentage(150.0, None)
         self.assertIsNone(growth_none)
 
+    def test_build_filter_clause(self):
+        """Rule: build_filter_clause correctly generates parameterized SQL conditions."""
+        from analytics.kpis import build_filter_clause
+        clause, params = build_filter_clause({
+            'start_date': '2026-01-01',
+            'end_date': '2026-01-31',
+            'category': 'Electronics',
+            'region': 'North America'
+        })
+        self.assertIn("o.order_status != 'Cancelled'", clause)
+        self.assertIn("o.order_date >= %s", clause)
+        self.assertIn("o.order_date <= %s", clause)
+        self.assertIn("p.category = %s", clause)
+        self.assertIn("o.region = %s", clause)
+        self.assertEqual(len(params), 4)
+
+    def test_kpi_summary_period_comparison(self):
+        """Rule: get_kpi_summary accurately calculates previous period comparison for a date range."""
+        from analytics.kpis import get_kpi_summary
+        summary = get_kpi_summary({'start_date': '2026-05-01', 'end_date': '2026-05-07'})
+        self.assertIn('current', summary)
+        self.assertIn('previous', summary)
+        self.assertIn('changes', summary)
+        self.assertTrue(summary['has_comparison'])
+        self.assertIsNotNone(summary['current']['revenue_growth_pct'])
+        self.assertGreater(summary['previous']['net_sales'], 0)
+
+    def test_products_table_filtering(self):
+        """Rule: get_all_products_table respects category and date filters."""
+        from analytics.revenue import get_all_products_table
+        all_prods = get_all_products_table({})
+        electronics = get_all_products_table({'category': 'Electronics'})
+        self.assertGreater(len(all_prods), len(electronics))
+        for p in electronics:
+            self.assertEqual(p['category'], 'Electronics')
+
 if __name__ == '__main__':
     unittest.main()

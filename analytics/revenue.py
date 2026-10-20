@@ -249,13 +249,14 @@ def get_all_products_table(filters=None):
         COALESCE(SUM(oi.quantity * oi.unit_price - oi.discount - oi.return_amount), 0.0) AS net_sales,
         COALESCE(AVG(oi.unit_price), 0.0) AS avg_unit_price,
         COUNT(DISTINCT o.order_id) AS orders_count
-    FROM products p
-    LEFT JOIN order_items oi ON p.product_id = oi.product_id
-    LEFT JOIN orders o ON oi.order_id = o.order_id AND o.order_status != 'Cancelled'
+    FROM orders o
+    JOIN order_items oi ON o.order_id = oi.order_id
+    JOIN products p ON oi.product_id = p.product_id
+    {where_sql}
     GROUP BY p.product_id, p.product_name, p.category
     ORDER BY net_sales DESC
     """
-    df = execute_query(query)
+    df = execute_query(query, params)
     if df.empty:
         return []
         

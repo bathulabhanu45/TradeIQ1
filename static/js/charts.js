@@ -1,29 +1,29 @@
 /**
  * TradeIQ - Interactive Plotly.js Chart Controller
- * Wine Red & Light Sand Luxury Executive Visualization Engine
+ * Royal Blue & White Cream Luxury Executive Visualization Engine
  * Handles 7 interactive business intelligence visualizations with theme responsiveness.
  */
 
 const TradeIQCharts = (function () {
-  // Wine Red & Light Sand Luxury Palette
+  // Royal Blue & White Cream Executive Palette
   const PALETTE = {
-    wineRed: '#722F37',
-    wineRedDark: '#4A0E17',
-    wineRedDeep: '#380C14',
-    wineRedLight: '#8B1E3F',
-    wineRedVivid: '#9B2C3B',
-    lightSand: '#F7F4EE',
-    sandCream: '#FAF8F5',
-    sandSoft: '#EFEADF',
-    sandBorder: '#DFD5C4',
-    sandGold: '#C8A26A',
-    sandDark: '#A67C52',
+    royalBlue: '#1E40AF',
+    royalBlueDark: '#0F204E',
+    royalBlueDeep: '#070F24',
+    royalBlueLight: '#2563EB',
+    royalBlueVivid: '#3B82F6',
+    royalBlueSoft: '#60A5FA',
+    whiteCream: '#FAF8F5',
+    creamBg: '#F5F1E9',
+    creamSoft: '#EFE9DE',
+    creamBorder: '#DCD4C4',
+    creamGold: '#D99B26',
     emerald: '#15803D',
-    coral: '#C0392B',
+    coral: '#DC2626',
     amber: '#D97706',
     white: '#FFFFFF',
-    slate: '#6B5E59',
-    donut: ['#722F37', '#C8A26A', '#8B1E3F', '#15803D', '#A67C52', '#9B2C3B', '#D97706']
+    slate: '#53627C',
+    donut: ['#1E40AF', '#2563EB', '#3B82F6', '#60A5FA', '#D99B26', '#15803D', '#0F204E']
   };
 
   function isDarkMode() {
@@ -38,14 +38,14 @@ const TradeIQCharts = (function () {
       autosize: true,
       font: {
         family: 'Inter, system-ui, -apple-system, sans-serif',
-        color: dark ? '#F7F4EE' : '#2A1810',
+        color: dark ? '#FAF8F5' : '#0F172A',
         size: 11
       },
       margin: { l: 50, r: 25, t: 25, b: 40 },
       hoverlabel: {
-        bgcolor: dark ? '#260E14' : '#FFFFFF',
-        bordercolor: dark ? '#C8A26A' : '#722F37',
-        font: { color: dark ? '#FAF8F5' : '#2A1810', size: 12 }
+        bgcolor: dark ? '#0E172F' : '#FFFFFF',
+        bordercolor: dark ? '#3B82F6' : '#1E40AF',
+        font: { color: dark ? '#FAF8F5' : '#0F172A', size: 12 }
       },
       legend: {
         orientation: 'h',
@@ -53,7 +53,7 @@ const TradeIQCharts = (function () {
         y: 1.02,
         xanchor: 'right',
         x: 1,
-        font: { size: 10, color: dark ? '#C8B9B0' : '#6B5E59' }
+        font: { size: 10, color: dark ? '#CBD5E1' : '#53627C' }
       }
     };
   }
@@ -73,10 +73,10 @@ const TradeIQCharts = (function () {
       name: 'Net Sales ($)',
       type: 'scatter',
       mode: 'lines+markers',
-      line: { color: '#722F37', width: 3, shape: 'spline' },
-      marker: { color: '#4A0E17', size: 7, symbol: 'circle' },
+      line: { color: '#1E40AF', width: 3.2, shape: 'spline' },
+      marker: { color: '#0F204E', size: 7, symbol: 'circle' },
       fill: 'tozeroy',
-      fillcolor: dark ? 'rgba(114, 47, 55, 0.28)' : 'rgba(114, 47, 55, 0.12)',
+      fillcolor: dark ? 'rgba(30, 64, 175, 0.30)' : 'rgba(30, 64, 175, 0.12)',
       hovertemplate: '<b>%{x}</b><br>Net Sales: $%{y:,.2f}<extra></extra>'
     };
 
@@ -86,20 +86,20 @@ const TradeIQCharts = (function () {
       name: 'Gross Sales ($)',
       type: 'scatter',
       mode: 'lines',
-      line: { color: '#C8A26A', width: 2, dash: 'dot', shape: 'spline' },
+      line: { color: '#3B82F6', width: 2, dash: 'dot', shape: 'spline' },
       hovertemplate: 'Gross Sales: $%{y:,.2f}<extra></extra>'
     };
 
     const layout = {
       ...getBaseLayout(),
       xaxis: {
-        gridcolor: dark ? 'rgba(114, 47, 55, 0.25)' : '#EFEADF',
-        zerolinecolor: dark ? 'rgba(200, 162, 106, 0.4)' : '#DFD5C4'
+        gridcolor: dark ? 'rgba(59, 130, 246, 0.18)' : '#EFE9DE',
+        zerolinecolor: dark ? 'rgba(59, 130, 246, 0.35)' : '#DCD4C4'
       },
       yaxis: {
         tickprefix: '$',
-        gridcolor: dark ? 'rgba(114, 47, 55, 0.25)' : '#EFEADF',
-        zerolinecolor: dark ? 'rgba(200, 162, 106, 0.4)' : '#DFD5C4'
+        gridcolor: dark ? 'rgba(59, 130, 246, 0.18)' : '#EFE9DE',
+        zerolinecolor: dark ? 'rgba(59, 130, 246, 0.35)' : '#DCD4C4'
       }
     };
 
@@ -158,7 +158,7 @@ const TradeIQCharts = (function () {
       type: 'bar',
       orientation: 'h',
       marker: {
-        color: ['#722F37', '#8B1E3F', '#C8A26A', '#A67C52', '#4A0E17'],
+        color: ['#1E40AF', '#2563EB', '#3B82F6', '#60A5FA', '#93C5FD'],
         opacity: 0.95,
         line: { width: 0 }
       },
@@ -172,7 +172,7 @@ const TradeIQCharts = (function () {
       margin: { l: 95, r: 25, t: 15, b: 25 },
       xaxis: {
         tickprefix: '$',
-        gridcolor: dark ? 'rgba(114, 47, 55, 0.25)' : '#EFEADF'
+        gridcolor: dark ? 'rgba(59, 130, 246, 0.18)' : '#EFE9DE'
       },
       yaxis: {
         automargin: true
@@ -196,7 +196,7 @@ const TradeIQCharts = (function () {
       y: data.gross,
       name: 'Gross Sales',
       type: 'bar',
-      marker: { color: '#722F37' },
+      marker: { color: '#2563EB' },
       hovertemplate: 'Gross: $%{y:,.2f}<extra></extra>'
     };
 
@@ -205,7 +205,7 @@ const TradeIQCharts = (function () {
       y: data.net,
       name: 'Net Sales',
       type: 'bar',
-      marker: { color: '#C8A26A' },
+      marker: { color: '#1E40AF' },
       hovertemplate: 'Net: $%{y:,.2f}<extra></extra>'
     };
 
@@ -214,7 +214,7 @@ const TradeIQCharts = (function () {
       y: data.discounts,
       name: 'Discounts',
       type: 'bar',
-      marker: { color: '#A67C52' },
+      marker: { color: '#D99B26' },
       hovertemplate: 'Discounts: $%{y:,.2f}<extra></extra>'
     };
 
@@ -223,15 +223,15 @@ const TradeIQCharts = (function () {
       y: data.returns,
       name: 'Returns',
       type: 'bar',
-      marker: { color: '#C0392B' },
+      marker: { color: '#DC2626' },
       hovertemplate: 'Returns: $%{y:,.2f}<extra></extra>'
     };
 
     const layout = {
       ...getBaseLayout(),
       barmode: 'group',
-      xaxis: { gridcolor: dark ? 'rgba(114, 47, 55, 0.25)' : '#EFEADF' },
-      yaxis: { tickprefix: '$', gridcolor: dark ? 'rgba(114, 47, 55, 0.25)' : '#EFEADF' }
+      xaxis: { gridcolor: dark ? 'rgba(59, 130, 246, 0.18)' : '#EFE9DE' },
+      yaxis: { tickprefix: '$', gridcolor: dark ? 'rgba(59, 130, 246, 0.18)' : '#EFE9DE' }
     };
 
     Plotly.react(containerId, [traceGross, traceNet, traceDiscounts, traceReturns], layout, { responsive: true, displayModeBar: false });
@@ -247,13 +247,13 @@ const TradeIQCharts = (function () {
 
     const statusColors = {
       'Completed': '#15803D',
-      'Delivered': '#722F37',
-      'Returned': '#C8A26A',
-      'Cancelled': '#C0392B',
-      'Processing': '#8B1E3F'
+      'Delivered': '#1E40AF',
+      'Returned': '#D99B26',
+      'Cancelled': '#DC2626',
+      'Processing': '#2563EB'
     };
 
-    const colors = data.statuses.map(s => statusColors[s] || '#A67C52');
+    const colors = data.statuses.map(s => statusColors[s] || '#60A5FA');
 
     const trace = {
       labels: data.statuses,
@@ -295,7 +295,7 @@ const TradeIQCharts = (function () {
       y: data.growth_rates,
       type: 'bar',
       marker: {
-        color: data.growth_rates.map(g => g >= 0 ? '#722F37' : '#C0392B'),
+        color: data.growth_rates.map(g => g >= 0 ? '#1E40AF' : '#DC2626'),
         line: { width: 0 }
       },
       text: data.growth_rates.map(g => `${g > 0 ? '+' : ''}${g}%`),
@@ -305,12 +305,12 @@ const TradeIQCharts = (function () {
 
     const layout = {
       ...getBaseLayout(),
-      xaxis: { gridcolor: dark ? 'rgba(114, 47, 55, 0.25)' : '#EFEADF' },
+      xaxis: { gridcolor: dark ? 'rgba(59, 130, 246, 0.18)' : '#EFE9DE' },
       yaxis: {
         ticksuffix: '%',
-        gridcolor: dark ? 'rgba(114, 47, 55, 0.25)' : '#EFEADF',
+        gridcolor: dark ? 'rgba(59, 130, 246, 0.18)' : '#EFE9DE',
         zeroline: true,
-        zerolinecolor: dark ? '#C8A26A' : '#722F37',
+        zerolinecolor: dark ? '#3B82F6' : '#1E40AF',
         zerolinewidth: 1.5
       }
     };
@@ -333,8 +333,8 @@ const TradeIQCharts = (function () {
       type: 'bar',
       orientation: 'h',
       marker: {
-        color: '#722F37',
-        opacity: 0.9
+        color: '#1E40AF',
+        opacity: 0.92
       },
       text: data.net_sales.map(v => `$${v.toLocaleString()}`),
       textposition: 'inside',
@@ -347,7 +347,7 @@ const TradeIQCharts = (function () {
       margin: { l: 150, r: 25, t: 15, b: 25 },
       xaxis: {
         tickprefix: '$',
-        gridcolor: dark ? 'rgba(114, 47, 55, 0.25)' : '#EFEADF'
+        gridcolor: dark ? 'rgba(59, 130, 246, 0.18)' : '#EFE9DE'
       },
       yaxis: {
         automargin: true

@@ -298,8 +298,13 @@ document.addEventListener('DOMContentLoaded', () => {
       updateTrendBadge('kpi-trend-growth', curr.revenue_growth_pct, null, false);
       if (growthSub) growthSub.innerText = `vs prior baseline`;
     } else {
-      if (growthElem) growthElem.innerText = '+77.47%';
-      if (growthSub) growthSub.innerText = 'Period Comparison';
+      if (growthElem) growthElem.innerText = 'N/A';
+      if (growthSub) growthSub.innerText = 'Baseline Period';
+      const badge = document.getElementById('kpi-trend-growth');
+      if (badge) {
+        badge.className = 'trend-indicator neutral';
+        badge.innerHTML = '<i class="fas fa-minus"></i> Baseline';
+      }
     }
   }
 

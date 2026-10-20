@@ -187,9 +187,17 @@ def get_kpi_summary(filters=None):
             p_orders = int(prev_df.iloc[0]['valid_orders'])
             p_net = p_gross - p_disc - p_ret
             p_aov = (p_net / p_orders) if p_orders > 0 else 0.0
+            prev_kpis = {
+                'gross_sales': round(p_gross, 2),
+                'total_discounts': round(p_disc, 2),
+                'total_returns': round(p_ret, 2),
+                'net_sales': round(p_net, 2),
+                'valid_orders': p_orders,
+                'aov': round(p_aov, 2)
+            }
             
     # 3. Intelligent baseline calculation when looking at lifetime / full-span data
-    is_full_span = prev_kpis['net_sales'] == 0
+    is_full_span = not has_dates
     if is_full_span:
         dr_query = f"""
         SELECT 

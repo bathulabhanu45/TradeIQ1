@@ -20,7 +20,7 @@
 </div>
 
 <!-- Executive Summary Narrative Card -->
-<div class="chart-panel mb-4" style="border-left: 4px solid var(--cyan) !important;">
+<div class="chart-panel mb-4" style="border-left: 4px solid var(--royal-blue) !important;">
   <div class="chart-header">
     <div class="chart-header-left">
       <h3><i class="fas fa-lightbulb text-warning"></i> Executive Findings & Operational Narrative</h3>
@@ -29,8 +29,8 @@
   </div>
   <p class="mb-3" style="font-size: 0.94rem; line-height: 1.7; color: var(--text-main);">
     Over the analyzed reporting period, TradeIQ processed <strong>{{ kpis.current.valid_orders }}</strong> distinct completed transactions, 
-    generating a cumulative recognized Net Sales volume of <strong style="color: var(--cyan);">${{ "{:,.2f}".format(kpis.current.net_sales) }}</strong>. 
-    Gross customer retail demand reached <strong class="text-white">${{ "{:,.2f}".format(kpis.current.gross_sales) }}</strong> before promotional markdown deductions 
+    generating a cumulative recognized Net Sales volume of <strong style="color: var(--royal-blue);">${{ "{:,.2f}".format(kpis.current.net_sales) }}</strong>. 
+    Gross customer retail demand reached <strong class="text-primary">${{ "{:,.2f}".format(kpis.current.gross_sales) }}</strong> before promotional markdown deductions 
     totaling <strong style="color: #F59E0B;">${{ "{:,.2f}".format(kpis.current.total_discounts) }}</strong> and post-delivery customer refund returns of 
     <strong style="color: var(--coral);">${{ "{:,.2f}".format(kpis.current.total_returns) }}</strong>.
   </p>
@@ -109,9 +109,9 @@
           </td>
           <td><span class="text-muted small">Post-dispatch refund deductions</span></td>
         </tr>
-        <tr style="background: rgba(139, 92, 246, 0.1);">
-          <td><strong style="color: var(--cyan);">Net Sales (Operating Revenue)</strong></td>
-          <td class="text-end fw-bold" style="color: var(--cyan); font-size: 1rem;">${{ "{:,.2f}".format(kpis.current.net_sales) }}</td>
+        <tr style="background: rgba(30, 64, 175, 0.08);">
+          <td><strong style="color: var(--royal-blue);">Net Sales (Operating Revenue)</strong></td>
+          <td class="text-end fw-bold" style="color: var(--royal-blue); font-size: 1rem;">${{ "{:,.2f}".format(kpis.current.net_sales) }}</td>
           <td class="text-end text-muted">${{ "{:,.2f}".format(kpis.previous.net_sales) }}</td>
           <td class="text-end">
             <span class="badge {% if kpis.changes.net_sales_pct and kpis.changes.net_sales_pct >= 0 %}bg-success text-white{% else %}bg-danger text-white{% endif %}">

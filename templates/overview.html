@@ -215,7 +215,7 @@
       </div>
     </div>
     <div class="kpi-number-wrap">
-      <div class="kpi-metric-number" id="kpi-val-growth">{{ "{:+.2f}%".format(kpis.current.revenue_growth_pct) if kpis and kpis.current and kpis.current.revenue_growth_pct is not none else "+77.47%" }}</div>
+      <div class="kpi-metric-number" id="kpi-val-growth">{{ "{:+.2f}%".format(kpis.current.revenue_growth_pct) if kpis and kpis.current and kpis.current.revenue_growth_pct is not none else "N/A" }}</div>
     </div>
     <div class="kpi-bottom">
       <span id="kpi-sub-growth">Period Comparison</span>
@@ -351,24 +351,34 @@
             {% for p in top_products %}
             <tr>
               <td>
-                <span class="badge" style="{% if p.rank == 1 %}background: var(--sand-gold); color: #FFFFFF; font-weight: 800;{% elif p.rank <= 3 %}background: var(--wine-red); color: #FFFFFF;{% else %}background: var(--sand-soft); color: var(--text-main); border: 1px solid var(--border-color);{% endif %}">
-                  #{{ p.rank }}
-                </span>
+                {% if p.rank == 1 %}
+                  <span class="badge" style="background: var(--royal-blue); color: #FFFFFF; font-weight: 800;">#{{ p.rank }}</span>
+                {% elif p.rank in [2, 3] %}
+                  <span class="badge" style="background: var(--royal-blue-light); color: #FFFFFF;">#{{ p.rank }}</span>
+                {% else %}
+                  <span class="badge" style="background: var(--cream-surface-alt); color: var(--text-main); border: 1px solid var(--border-color);">#{{ p.rank }}</span>
+                {% endif %}
               </td>
               <td><strong>{{ p.product_name }}</strong></td>
               <td><span class="badge bg-primary-subtle text-primary">{{ p.category }}</span></td>
               <td class="text-end fw-semibold">{{ p.units_sold }}</td>
               <td class="text-end text-muted">${{ "{:,.2f}".format(p.gross_sales) }}</td>
-              <td class="text-end" style="color: var(--sand-dark);">${{ "{:,.2f}".format(p.total_discounts) }}</td>
+              <td class="text-end" style="color: var(--cream-gold);">${{ "{:,.2f}".format(p.total_discounts) }}</td>
               <td class="text-end" style="color: var(--coral);">${{ "{:,.2f}".format(p.total_returns) }}</td>
               <td class="text-end fw-bold" style="color: var(--emerald);">${{ "{:,.2f}".format(p.net_sales) }}</td>
               <td class="text-end">
                 <div class="d-flex align-items-center justify-content-end gap-2">
                   <span class="small fw-bold">{{ p.share_pct }}%</span>
-                  <div class="progress flex-grow-1" style="height: 6px; max-width: 60px; background: var(--sand-soft);">
-                    <div class="progress-bar" style="width: {{ p.share_pct }}%; background: var(--wine-red);"></div>
+                  <div class="progress flex-grow-1" style="height: 6px; max-width: 60px; background: var(--cream-surface-alt);">
+                    <div class="progress-bar" style="width: {{ p.share_pct }}%; background: var(--royal-blue);"></div>
                   </div>
                 </div>
+              </td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="9" class="text-center text-muted py-4">
+                <i class="fas fa-box-open fa-2x mb-2 d-block"></i> No product sales recorded for the selected filter criteria.
               </td>
             </tr>
             {% endfor %}
