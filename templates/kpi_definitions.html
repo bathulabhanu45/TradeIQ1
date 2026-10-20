@@ -1,0 +1,239 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Page Header Callout -->
+<div class="callout-card d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+  <div>
+    <h4 class="fw-bold mb-1" style="color: var(--white);">
+      <i class="fas fa-graduation-cap text-primary me-2"></i>Project Documentation & Technical Specifications
+    </h4>
+    <p class="text-muted small mb-0">Academic presentation portfolio, GAAP e-commerce accounting formulas, database architecture, and viva defense guide.</p>
+  </div>
+  <div class="d-flex gap-2">
+    <a href="{{ url_for('api.export_csv') }}" class="topbar-btn">
+      <i class="fas fa-file-csv text-primary"></i> Download Formula CSV
+    </a>
+  </div>
+</div>
+
+<!-- Section 1: Project Objective & Problem Statement -->
+<div class="row g-4 mb-4">
+  <div class="col-lg-6">
+    <div class="chart-panel h-100">
+      <div class="chart-header">
+        <div class="chart-header-left">
+          <h3><i class="fas fa-bullseye text-primary"></i> Project Objective</h3>
+          <p>Purpose and business intelligence target.</p>
+        </div>
+      </div>
+      <p class="small text-muted" style="line-height: 1.7;">
+        The primary objective of <strong>TradeIQ</strong> is to empower e-commerce executives and retail managers with an aggregated, 
+        auditable Business Intelligence decision-support platform. Unlike transactional order processing tools that track single customers, 
+        TradeIQ focuses on macro financial velocity, category contribution shares, territory penetration, and fulfillment leakage.
+      </p>
+      <div class="p-3 rounded-3 mt-auto" style="background: var(--bg-surface-alt); border: 1px solid var(--border-color);">
+        <strong class="text-white small d-block mb-1"><i class="fas fa-check text-success me-1"></i> Core Deliverables:</strong>
+        <span class="small text-muted">7 Animated KPI metrics, 7 Interactive Plotly charts, 7 distinct operational pages, multi-format exports (CSV/PDF).</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="chart-panel h-100">
+      <div class="chart-header">
+        <div class="chart-header-left">
+          <h3><i class="fas fa-triangle-exclamation" style="color: var(--coral);"></i> Problem Statement</h3>
+          <p>Challenges resolved by TradeIQ.</p>
+        </div>
+      </div>
+      <p class="small text-muted" style="line-height: 1.7;">
+        Raw transactional databases (OLTP) contain millions of line-item records with complex returns, promotional vouchers, and status cancellations. 
+        Traditional student and prototype systems often suffer from:
+      </p>
+      <ul class="small text-muted mb-0 ps-3">
+        <li class="mb-1"><strong class="text-white">Order Multi-Counting:</strong> Joining orders with line items inflates parent order counts.</li>
+        <li class="mb-1"><strong class="text-white">Improper Returns Handling:</strong> Treating refunds as non-existent or deleting orders corrupts fulfillment logs.</li>
+        <li class="mb-1"><strong class="text-white">Division by Zero Crashes:</strong> Unhandled zero sales in comparison periods breaks standard code.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Section 2: Technology Stack & Database Architecture -->
+<div class="chart-panel mb-4">
+  <div class="chart-header">
+    <div class="chart-header-left">
+      <h3><i class="fas fa-layer-group" style="color: var(--cyan);"></i> Technology Stack & System Implementation</h3>
+      <p>Architectural building blocks powering TradeIQ.</p>
+    </div>
+  </div>
+  <div class="row g-3">
+    <div class="col-md-3">
+      <div class="p-3 rounded-3 h-100" style="background: var(--bg-surface-alt); border: 1px solid var(--border-color);">
+        <h6 class="fw-bold text-white mb-2"><i class="fab fa-html5 text-danger me-2"></i>Frontend Layer</h6>
+        <p class="small text-muted mb-0">HTML5 semantic structure, Bootstrap 5.3 grid, Vanilla CSS3 SaaS design system, Plotly.js 2.29 for dynamic charts, Font Awesome 6 icons.</p>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="p-3 rounded-3 h-100" style="background: var(--bg-surface-alt); border: 1px solid var(--border-color);">
+        <h6 class="fw-bold text-white mb-2"><i class="fab fa-python text-primary me-2"></i>Backend Controller</h6>
+        <p class="small text-muted mb-0">Python 3 Flask framework with modular Blueprint routing, REST API endpoints, and clean request filter sanitization.</p>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="p-3 rounded-3 h-100" style="background: var(--bg-surface-alt); border: 1px solid var(--border-color);">
+        <h6 class="fw-bold text-white mb-2"><i class="fas fa-database text-warning me-2"></i>Relational Database</h6>
+        <p class="small text-muted mb-0">MySQL 8.4 engine utilizing <code>mysql-connector-python</code>, parameterized SQL prepared statements, foreign key cascades, and B-tree indexes.</p>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="p-3 rounded-3 h-100" style="background: var(--bg-surface-alt); border: 1px solid var(--border-color);">
+        <h6 class="fw-bold text-white mb-2"><i class="fas fa-brain text-success me-2"></i>Analytics & Reporting</h6>
+        <p class="small text-muted mb-0">Pandas DataFrames for time-series aggregation, NumPy for safe division, Matplotlib for static report figures, ReportLab for executive PDFs.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Section 3: Exact KPI Formulas & Accounting Logic -->
+<div class="chart-panel mb-4">
+  <div class="chart-header">
+    <div class="chart-header-left">
+      <h3><i class="fas fa-calculator text-primary"></i> 7 Key Performance Indicators (KPI) Mathematical Specifications</h3>
+      <p>Standardized formulas implemented across Python analytics and MySQL queries.</p>
+    </div>
+  </div>
+  <div class="table-responsive">
+    <table class="custom-table">
+      <thead>
+        <tr>
+          <th>KPI Metric</th>
+          <th>Mathematical Formula</th>
+          <th>Database Query Logic</th>
+          <th>Exclusion / Inclusion Policy</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong class="text-white">1. Gross Sales</strong></td>
+          <td><code>&Sigma; (quantity &times; unit_price)</code></td>
+          <td><code>SUM(oi.quantity * oi.unit_price)</code></td>
+          <td>Excludes orders where <code>order_status = 'Cancelled'</code>.</td>
+        </tr>
+        <tr>
+          <td><strong class="text-white">2. Total Discounts</strong></td>
+          <td><code>&Sigma; (discount)</code></td>
+          <td><code>SUM(oi.discount)</code></td>
+          <td>Only aggregates discounts from eligible non-cancelled transactions.</td>
+        </tr>
+        <tr>
+          <td><strong class="text-white">3. Total Returns</strong></td>
+          <td><code>&Sigma; (return_amount)</code></td>
+          <td><code>SUM(oi.return_amount)</code></td>
+          <td>Captures full or partial item-level refund amounts on delivered/returned goods.</td>
+        </tr>
+        <tr style="background: rgba(139, 92, 246, 0.1);">
+          <td><strong style="color: var(--cyan);">4. Net Sales</strong></td>
+          <td><code>Gross Sales &minus; Discounts &minus; Returns</code></td>
+          <td><code>SUM(qty*price - disc - returns)</code></td>
+          <td><strong>Primary operating revenue indicator</strong> driving all growth and category shares.</td>
+        </tr>
+        <tr>
+          <td><strong class="text-white">5. Valid Orders</strong></td>
+          <td><code>Count(Distinct order_id)</code></td>
+          <td><code>COUNT(DISTINCT o.order_id)</code></td>
+          <td>Excludes cancelled orders. Retains returned orders as fulfillment dispatch occurred.</td>
+        </tr>
+        <tr>
+          <td><strong class="text-white">6. Average Order Value</strong></td>
+          <td><code>Net Sales &divide; Valid Orders</code></td>
+          <td><code>(Net Sales / Valid Orders)</code></td>
+          <td>Guarded against division by zero (evaluates to $0.00 if Valid Orders = 0).</td>
+        </tr>
+        <tr>
+          <td><strong class="text-white">7. Revenue Growth %</strong></td>
+          <td><code>((Current &minus; Prev) &divide; Prev) &times; 100</code></td>
+          <td><code>np.where(prev > 0, ((curr-prev)/prev)*100, None)</code></td>
+          <td>If prior period has zero sales, returns <code>None</code> and displays <code>N/A</code>.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Section 4: Academic Presentation Viva Voce Q&A -->
+<div class="chart-panel mb-4">
+  <div class="chart-header">
+    <div class="chart-header-left">
+      <h3><i class="fas fa-comments-question text-info"></i> Second-Year CS Viva Voce Defense Guide</h3>
+      <p>Anticipated technical questions and comprehensive answers for semester examination.</p>
+    </div>
+  </div>
+  <div class="accordion accordion-flush" id="academicVivaAccordion">
+    <div class="accordion-item border-0 mb-3 rounded-3" style="background: var(--bg-surface-alt); border: 1px solid var(--border-color) !important;">
+      <h2 class="accordion-header" id="vivaOne">
+        <button class="accordion-button collapsed fw-bold text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" style="background: transparent;">
+          Q1: Why do returned orders remain in the valid order count while cancelled orders are excluded?
+        </button>
+      </h2>
+      <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#academicVivaAccordion">
+        <div class="accordion-body text-muted small pt-0">
+          <strong>Defense:</strong> A cancelled order represents an aborted transaction prior to fulfillment or shipping; no warehouse labor, packing, or delivery occurred. In contrast, a returned order was picked, packed, dispatched, and invoiced. Counting it in Valid Orders accurately tracks logistical throughput and warehouse workload, while the monetary refund is credited back by deducting <code>return_amount</code> in Net Sales.
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-item border-0 mb-3 rounded-3" style="background: var(--bg-surface-alt); border: 1px solid var(--border-color) !important;">
+      <h2 class="accordion-header" id="vivaTwo">
+        <button class="accordion-button collapsed fw-bold text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" style="background: transparent;">
+          Q2: How does TradeIQ eliminate duplicate counting when joining orders with order_items?
+        </button>
+      </h2>
+      <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#academicVivaAccordion">
+        <div class="accordion-body text-muted small pt-0">
+          <strong>Defense:</strong> When joining a 1-to-many relationship (one order to multiple item rows), joining multiplies parent table rows by the number of item records. If one naively uses <code>COUNT(o.order_id)</code>, an order with 3 items is counted 3 times. TradeIQ strictly uses <code>COUNT(DISTINCT o.order_id)</code> in SQL queries and <code>df['order_id'].nunique()</code> in Pandas, guaranteeing 100% mathematical integrity.
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-item border-0 mb-3 rounded-3" style="background: var(--bg-surface-alt); border: 1px solid var(--border-color) !important;">
+      <h2 class="accordion-header" id="vivaThree">
+        <button class="accordion-button collapsed fw-bold text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" style="background: transparent;">
+          Q3: Why is DECIMAL(10,2) used for monetary values instead of FLOAT or DOUBLE?
+        </button>
+      </h2>
+      <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#academicVivaAccordion">
+        <div class="accordion-body text-muted small pt-0">
+          <strong>Defense:</strong> Binary floating-point data types (<code>FLOAT</code>, <code>DOUBLE</code>) store approximate values using binary fractions, leading to rounding inaccuracies (such as $0.10 + $0.20 = $0.30000000000000004). <code>DECIMAL(10,2)</code> is a fixed-point numerical type storing exact decimal digits, making it compliant with GAAP accounting standards and financial audits.
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-item border-0 mb-3 rounded-3" style="background: var(--bg-surface-alt); border: 1px solid var(--border-color) !important;">
+      <h2 class="accordion-header" id="vivaFour">
+        <button class="accordion-button collapsed fw-bold text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" style="background: transparent;">
+          Q4: How does TradeIQ ensure SQL injection immunity across all filter inputs?
+        </button>
+      </h2>
+      <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#academicVivaAccordion">
+        <div class="accordion-body text-muted small pt-0">
+          <strong>Defense:</strong> We never concatenate user strings into raw SQL statements. We use prepared statements with placeholders (<code>%s</code> for MySQL and <code>?</code> for SQLite). The database engine compiles the SQL query structure separately before binding the parameter values as pure literal values, rendering SQL injection technically impossible.
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-item border-0 rounded-3" style="background: var(--bg-surface-alt); border: 1px solid var(--border-color) !important;">
+      <h2 class="accordion-header" id="vivaFive">
+        <button class="accordion-button collapsed fw-bold text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" style="background: transparent;">
+          Q5: What are the current project limitations and proposed future enhancements?
+        </button>
+      </h2>
+      <div id="collapseFive" class="accordion-collapse collapse" data-bs-parent="#academicVivaAccordion">
+        <div class="accordion-body text-muted small pt-0">
+          <strong>Defense:</strong> Current limitations include the absence of supplier COGS data (preventing net profit calculations) and single-currency reporting in USD. Future enhancements include machine learning revenue forecasting (using ARIMA or Prophet), multi-currency FX conversion, and automated email scheduling with Celery.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

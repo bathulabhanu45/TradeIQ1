@@ -1,0 +1,246 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Page Header Callout -->
+<div class="callout-card d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+  <div>
+    <h4 class="fw-bold mb-1" style="color: #FAF8F5;">
+      <i class="fas fa-chart-line me-2" style="color: var(--sand-gold);"></i>Revenue Analytics & Financial Performance
+    </h4>
+    <p class="small mb-0" style="color: rgba(247,244,238,0.75);">Time-series sales trends, seasonal peak tracking, gross-to-net realization, and quarterly growth.</p>
+  </div>
+  <div class="d-flex gap-2">
+    <a href="{{ url_for('api.export_csv') }}" class="topbar-btn">
+      <i class="fas fa-file-csv" style="color: var(--sand-gold);"></i> Export Revenue CSV
+    </a>
+  </div>
+</div>
+
+<!-- Universal Filter Toolbar -->
+<section class="global-filter-panel mb-4">
+  <form id="filter-form" onsubmit="return false;">
+    <div class="filter-grid">
+      <div class="filter-group">
+        <label for="filter-month"><i class="fas fa-calendar-days me-1" style="color:var(--wine-red);"></i>Select Month</label>
+        <select id="filter-month" class="form-select">
+          <option value="All">All Available Months</option>
+          {% for m in filter_options.months %}
+            <option value="{{ m.value }}">{{ m.label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="filter-category"><i class="fas fa-tags me-1" style="color: var(--sand-gold);"></i>Category</label>
+        <select id="filter-category" class="form-select">
+          {% for cat in filter_options.categories %}
+            <option value="{{ cat }}">{{ cat }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="filter-start-date"><i class="fas fa-calendar-day me-1" style="color:var(--wine-red);"></i>Start Date</label>
+        <input type="date" id="filter-start-date" class="form-control" value="{{ filter_options.min_date }}">
+      </div>
+      <div class="filter-group">
+        <label for="filter-end-date"><i class="fas fa-calendar-check me-1" style="color:var(--wine-red);"></i>End Date</label>
+        <input type="date" id="filter-end-date" class="form-control" value="{{ filter_options.max_date }}">
+      </div>
+      <div class="filter-group">
+        <label for="filter-region"><i class="fas fa-globe me-1" style="color: var(--sand-gold);"></i>Region</label>
+        <select id="filter-region" class="form-select">
+          {% for reg in filter_options.regions %}
+            <option value="{{ reg }}">{{ reg }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="d-flex gap-2 ms-auto">
+        <button type="button" class="filter-btn-apply" id="btn-apply-filter">
+          <i class="fas fa-filter"></i> Apply Filters
+        </button>
+        <button type="button" class="filter-btn-reset" id="btn-reset-filter">
+          <i class="fas fa-rotate-left"></i> Reset
+        </button>
+      </div>
+    </div>
+  </form>
+</section>
+
+<!-- Revenue KPI Callout Highlights (Never Truncated) -->
+<div class="kpi-row mb-4">
+  <!-- Net Revenue -->
+  <div class="kpi-card-v2 kpi-purple">
+    <div class="kpi-top">
+      <span class="kpi-title">Recognized Net Revenue</span>
+      <div class="kpi-icon-pill purple"><i class="fas fa-sack-dollar"></i></div>
+    </div>
+    <div class="kpi-number-wrap">
+      <div class="kpi-metric-number" id="kpi-val-net">${{ "{:,.2f}".format(kpis.current.net_sales) }}</div>
+    </div>
+    <div class="kpi-bottom">
+      <span>Operating Revenue</span>
+      <span class="trend-indicator {% if kpis.changes.net_sales_pct and kpis.changes.net_sales_pct >= 0 %}up{% else %}down{% endif %}">
+        {{ "{:+.1f}%".format(kpis.changes.net_sales_pct) if kpis.changes.net_sales_pct is not none else "Baseline" }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Gross Invoiced -->
+  <div class="kpi-card-v2 kpi-blue">
+    <div class="kpi-top">
+      <span class="kpi-title">Gross Invoiced Sales</span>
+      <div class="kpi-icon-pill blue"><i class="fas fa-receipt"></i></div>
+    </div>
+    <div class="kpi-number-wrap">
+      <div class="kpi-metric-number" id="kpi-val-gross">${{ "{:,.2f}".format(kpis.current.gross_sales) }}</div>
+    </div>
+    <div class="kpi-bottom">
+      <span>Pre-deduction demand</span>
+      <span class="trend-indicator neutral">Unfiltered</span>
+    </div>
+  </div>
+
+  <!-- Best Performing Month -->
+  <div class="kpi-card-v2 kpi-emerald">
+    <div class="kpi-top">
+      <span class="kpi-title">Peak Revenue Month</span>
+      <div class="kpi-icon-pill emerald"><i class="fas fa-award"></i></div>
+    </div>
+    <div class="kpi-number-wrap">
+      <div class="kpi-metric-number" style="font-size: 1.45rem;">
+        {% if trend_data.best_month %}
+          {{ trend_data.best_month.period }}
+        {% else %}
+          N/A
+        {% endif %}
+      </div>
+    </div>
+    <div class="kpi-bottom">
+      <span>Record sales period</span>
+      <strong class="text-success">
+        {% if trend_data.best_month %}
+          ${{ "{:,.2f}".format(trend_data.best_month.revenue) }}
+        {% else %}
+          $0.00
+        {% endif %}
+      </strong>
+    </div>
+  </div>
+
+  <!-- Lowest Performing Month -->
+  <div class="kpi-card-v2 kpi-coral">
+    <div class="kpi-top">
+      <span class="kpi-title">Lowest Revenue Month</span>
+      <div class="kpi-icon-pill coral"><i class="fas fa-chart-line-down"></i></div>
+    </div>
+    <div class="kpi-number-wrap">
+      <div class="kpi-metric-number" style="font-size: 1.45rem;">
+        {% if trend_data.worst_month %}
+          {{ trend_data.worst_month.period }}
+        {% else %}
+          N/A
+        {% endif %}
+      </div>
+    </div>
+    <div class="kpi-bottom">
+      <span>Seasonal trough</span>
+      <strong style="color: var(--coral);">
+        {% if trend_data.worst_month %}
+          ${{ "{:,.2f}".format(trend_data.worst_month.revenue) }}
+        {% else %}
+          $0.00
+        {% endif %}
+      </strong>
+    </div>
+  </div>
+</div>
+
+<!-- Revenue Charts Grid -->
+<div class="row g-4 mb-4">
+  <!-- Chart 1: Monthly Revenue Trend -->
+  <div class="col-12">
+    <div class="chart-panel">
+      <div class="chart-header">
+        <div class="chart-header-left">
+          <h3><i class="fas fa-chart-area text-primary"></i> Monthly Net vs Gross Revenue Trajectory</h3>
+          <p>Continuous trend of gross invoiced volume versus recognized net sales after markdowns and returns.</p>
+        </div>
+        <div class="btn-group btn-group-sm">
+          <button type="button" class="btn btn-outline-primary active" id="btn-view-monthly">Monthly</button>
+          <button type="button" class="btn btn-outline-primary" id="btn-view-quarterly">Quarterly</button>
+        </div>
+      </div>
+      <div id="chart-revenue-trend" class="chart-box" style="min-height: 380px;"></div>
+    </div>
+  </div>
+
+  <!-- Chart 2: Gross vs Net Breakdown -->
+  <div class="col-lg-6">
+    <div class="chart-panel h-100">
+      <div class="chart-header">
+        <div class="chart-header-left">
+          <h3><i class="fas fa-scale-balanced" style="color: var(--wine-red);"></i> Revenue Deductions Impact</h3>
+          <p>Side-by-side comparison of gross sales, discounts, returns, and net sales.</p>
+        </div>
+      </div>
+      <div id="chart-gross-vs-net" class="chart-box"></div>
+    </div>
+  </div>
+
+  <!-- Chart 3: Period-over-Period Growth -->
+  <div class="col-lg-6">
+    <div class="chart-panel h-100">
+      <div class="chart-header">
+        <div class="chart-header-left">
+          <h3><i class="fas fa-chart-simple" style="color: var(--emerald);"></i> Month-over-Month (MoM) Growth (%)</h3>
+          <p>Monthly percentage expansion velocity across active billing cycles.</p>
+        </div>
+      </div>
+      <div id="chart-period-growth" class="chart-box"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Quarterly Revenue Performance Table -->
+<div class="chart-panel mb-4">
+  <div class="chart-header">
+    <div class="chart-header-left">
+      <h3><i class="fas fa-table-list text-info"></i> Quarterly Financial Aggregation Table</h3>
+      <p>Summary of gross sales, marketing discounts, refunds, net revenue, and quarter-over-quarter expansion.</p>
+    </div>
+  </div>
+  <div class="table-responsive">
+    <table class="custom-table">
+      <thead>
+        <tr>
+          <th>Fiscal Quarter</th>
+          <th class="text-end">Gross Sales</th>
+          <th class="text-end">Discounts Granted</th>
+          <th class="text-end">Returns Processed</th>
+          <th class="text-end">Recognized Net Sales</th>
+          <th class="text-end">Valid Orders</th>
+          <th class="text-end">Average Order Value</th>
+          <th class="text-end">QoQ Growth (%)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for q in quarterly_data %}
+        <tr>
+          <td><strong>{{ q.quarter }}</strong></td>
+          <td class="text-end">${{ "{:,.2f}".format(q.gross) }}</td>
+          <td class="text-end" style="color: #F59E0B;">${{ "{:,.2f}".format(q.discounts) }}</td>
+          <td class="text-end" style="color: var(--coral);">${{ "{:,.2f}".format(q.returns) }}</td>
+          <td class="text-end fw-bold" style="color: var(--wine-red);">${{ "{:,.2f}".format(q.net) }}</td>
+          <td class="text-end">{{ q.orders }}</td>
+          <td class="text-end">${{ "{:,.2f}".format(q.aov) }}</td>
+          <td class="text-end">
+            <span class="badge {% if q.growth >= 0 %}bg-success-subtle text-success{% else %}bg-danger-subtle text-danger{% endif %}">
+              {{ "{:+.2f}%".format(q.growth) }}
+            </span>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

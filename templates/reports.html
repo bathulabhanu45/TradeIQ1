@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Executive Report Header Callout -->
+<div class="callout-card d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+  <div>
+    <h4 class="fw-bold mb-1" style="color: var(--white);">
+      <i class="fas fa-file-invoice-dollar text-primary me-2"></i>Executive Intelligence Business Report
+    </h4>
+    <p class="text-muted small mb-0">Management-level performance synthesis, variance reconciliations, and auditable governance exports.</p>
+  </div>
+  <div class="d-flex gap-2">
+    <a href="{{ url_for('api.export_csv', **filters) }}" class="topbar-btn">
+      <i class="fas fa-file-csv text-primary"></i> Download CSV Data
+    </a>
+    <a href="{{ url_for('api.export_pdf', **filters) }}" class="topbar-btn" style="background: var(--grad-primary); color: #FFFFFF; border: none;">
+      <i class="fas fa-file-pdf"></i> Download Executive PDF
+    </a>
+  </div>
+</div>
+
+<!-- Executive Summary Narrative Card -->
+<div class="chart-panel mb-4" style="border-left: 4px solid var(--cyan) !important;">
+  <div class="chart-header">
+    <div class="chart-header-left">
+      <h3><i class="fas fa-lightbulb text-warning"></i> Executive Findings & Operational Narrative</h3>
+      <p>Performance summary reflecting recognized revenue, sales deductions, and basket quality.</p>
+    </div>
+  </div>
+  <p class="mb-3" style="font-size: 0.94rem; line-height: 1.7; color: var(--text-main);">
+    Over the analyzed reporting period, TradeIQ processed <strong>{{ kpis.current.valid_orders }}</strong> distinct completed transactions, 
+    generating a cumulative recognized Net Sales volume of <strong style="color: var(--cyan);">${{ "{:,.2f}".format(kpis.current.net_sales) }}</strong>. 
+    Gross customer retail demand reached <strong class="text-white">${{ "{:,.2f}".format(kpis.current.gross_sales) }}</strong> before promotional markdown deductions 
+    totaling <strong style="color: #F59E0B;">${{ "{:,.2f}".format(kpis.current.total_discounts) }}</strong> and post-delivery customer refund returns of 
+    <strong style="color: var(--coral);">${{ "{:,.2f}".format(kpis.current.total_returns) }}</strong>.
+  </p>
+  <div class="d-flex flex-wrap gap-4 pt-3 border-top" style="border-color: var(--border-light) !important;">
+    <div>
+      <span class="text-muted small d-block">Average Order Basket (AOV):</span>
+      <strong class="text-white fs-5">${{ "{:,.2f}".format(kpis.current.aov) }}</strong>
+    </div>
+    <div>
+      <span class="text-muted small d-block">Period-over-Period Growth:</span>
+      <strong class="fs-5 {% if kpis.changes.net_sales_pct and kpis.changes.net_sales_pct >= 0 %}text-success{% else %}text-danger{% endif %}">
+        {% if kpis.changes.net_sales_pct is not none %}
+          {{ "+{:,.2f}%".format(kpis.changes.net_sales_pct) if kpis.changes.net_sales_pct >= 0 else "{:,.2f}%".format(kpis.changes.net_sales_pct) }}
+        {% else %}
+          N/A (Baseline)
+        {% endif %}
+      </strong>
+    </div>
+    <div>
+      <span class="text-muted small d-block">Data Governance:</span>
+      <strong class="text-info fs-5">100% Parameterized & Excluded Cancellations</strong>
+    </div>
+  </div>
+</div>
+
+<!-- KPI Scorecard Summary Table -->
+<div class="chart-panel mb-4">
+  <div class="chart-header">
+    <div class="chart-header-left">
+      <h3><i class="fas fa-table-list text-primary"></i> Key Performance Indicators Scorecard Table</h3>
+      <p>Auditable comparison between current period and historical baseline.</p>
+    </div>
+  </div>
+  <div class="table-responsive">
+    <table class="custom-table">
+      <thead>
+        <tr>
+          <th>Business Metric</th>
+          <th class="text-end">Current Period</th>
+          <th class="text-end">Previous Period</th>
+          <th class="text-end">Percentage Variance</th>
+          <th>Accounting Classification & Significance</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Gross Sales</strong></td>
+          <td class="text-end fw-semibold text-white">${{ "{:,.2f}".format(kpis.current.gross_sales) }}</td>
+          <td class="text-end text-muted">${{ "{:,.2f}".format(kpis.previous.gross_sales) }}</td>
+          <td class="text-end">
+            <span class="badge {% if kpis.changes.gross_sales_pct and kpis.changes.gross_sales_pct >= 0 %}bg-success-subtle text-success{% else %}bg-secondary-subtle text-secondary{% endif %}">
+              {{ "{:+.2f}%".format(kpis.changes.gross_sales_pct) if kpis.changes.gross_sales_pct is not none else "N/A" }}
+            </span>
+          </td>
+          <td><span class="text-muted small">Baseline customer demand before markdowns</span></td>
+        </tr>
+        <tr>
+          <td><strong>Promotional Discounts</strong></td>
+          <td class="text-end" style="color: #F59E0B;">${{ "{:,.2f}".format(kpis.current.total_discounts) }}</td>
+          <td class="text-end text-muted">${{ "{:,.2f}".format(kpis.previous.total_discounts) }}</td>
+          <td class="text-end">
+            <span class="badge bg-warning-subtle text-warning">
+              {{ "{:+.2f}%".format(kpis.changes.discounts_pct) if kpis.changes.discounts_pct is not none else "N/A" }}
+            </span>
+          </td>
+          <td><span class="text-muted small">Marketing campaign concessions & voucher codes</span></td>
+        </tr>
+        <tr>
+          <td><strong>Customer Returns</strong></td>
+          <td class="text-end" style="color: var(--coral);">${{ "{:,.2f}".format(kpis.current.total_returns) }}</td>
+          <td class="text-end text-muted">${{ "{:,.2f}".format(kpis.previous.total_returns) }}</td>
+          <td class="text-end">
+            <span class="badge bg-danger-subtle text-danger">
+              {{ "{:+.2f}%".format(kpis.changes.returns_pct) if kpis.changes.returns_pct is not none else "N/A" }}
+            </span>
+          </td>
+          <td><span class="text-muted small">Post-dispatch refund deductions</span></td>
+        </tr>
+        <tr style="background: rgba(139, 92, 246, 0.1);">
+          <td><strong style="color: var(--cyan);">Net Sales (Operating Revenue)</strong></td>
+          <td class="text-end fw-bold" style="color: var(--cyan); font-size: 1rem;">${{ "{:,.2f}".format(kpis.current.net_sales) }}</td>
+          <td class="text-end text-muted">${{ "{:,.2f}".format(kpis.previous.net_sales) }}</td>
+          <td class="text-end">
+            <span class="badge {% if kpis.changes.net_sales_pct and kpis.changes.net_sales_pct >= 0 %}bg-success text-white{% else %}bg-danger text-white{% endif %}">
+              {{ "{:+.2f}%".format(kpis.changes.net_sales_pct) if kpis.changes.net_sales_pct is not none else "N/A" }}
+            </span>
+          </td>
+          <td><span class="text-cyan small fw-semibold">Recognized operating business revenue</span></td>
+        </tr>
+        <tr>
+          <td><strong>Valid Orders Count</strong></td>
+          <td class="text-end fw-bold text-white">{{ kpis.current.valid_orders }}</td>
+          <td class="text-end text-muted">{{ kpis.previous.valid_orders }}</td>
+          <td class="text-end">
+            <span class="badge bg-info-subtle text-info">
+              {{ "{:+.2f}%".format(kpis.changes.orders_pct) if kpis.changes.orders_pct is not none else "N/A" }}
+            </span>
+          </td>
+          <td><span class="text-muted small">Distinct orders fulfilling shipment (excludes cancelled)</span></td>
+        </tr>
+        <tr>
+          <td><strong>Average Order Value (AOV)</strong></td>
+          <td class="text-end fw-bold" style="color: var(--emerald);">${{ "{:,.2f}".format(kpis.current.aov) }}</td>
+          <td class="text-end text-muted">${{ "{:,.2f}".format(kpis.previous.aov) }}</td>
+          <td class="text-end">
+            <span class="badge bg-success-subtle text-success">
+              {{ "{:+.2f}%".format(kpis.changes.aov_pct) if kpis.changes.aov_pct is not none else "N/A" }}
+            </span>
+          </td>
+          <td><span class="text-muted small">Basket expenditure quality: Net Sales / Valid Orders</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Matplotlib High-Resolution Visual Reports Row -->
+<div class="row g-4 mb-4">
+  <div class="col-lg-7">
+    <div class="chart-panel h-100">
+      <div class="chart-header">
+        <div class="chart-header-left">
+          <h3><i class="fas fa-chart-line text-primary"></i> Monthly Sales Curve (Matplotlib Export)</h3>
+          <p>Server-rendered high-resolution visual for executive documents.</p>
+        </div>
+        <a href="data:image/png;base64,{{ trend_img }}" download="monthly_revenue_trend.png" class="btn btn-sm btn-outline-secondary" title="Save Chart Image">
+          <i class="fas fa-download"></i> Image
+        </a>
+      </div>
+      <div class="text-center p-2">
+        <img src="data:image/png;base64,{{ trend_img }}" alt="Monthly Revenue Trend" class="img-fluid rounded-3 border" style="border-color: var(--border-color) !important;">
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="chart-panel h-100">
+      <div class="chart-header">
+        <div class="chart-header-left">
+          <h3><i class="fas fa-chart-pie" style="color: var(--cyan);"></i> Category Share (Matplotlib Export)</h3>
+          <p>Donut distribution chart rendered for board presentations.</p>
+        </div>
+        <a href="data:image/png;base64,{{ donut_img }}" download="category_share.png" class="btn btn-sm btn-outline-secondary" title="Save Chart Image">
+          <i class="fas fa-download"></i> Image
+        </a>
+      </div>
+      <div class="text-center p-2">
+        <img src="data:image/png;base64,{{ donut_img }}" alt="Category Share" class="img-fluid rounded-3 border" style="border-color: var(--border-color) !important;">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Governance & Compliance Card -->
+<div class="chart-panel mb-4">
+  <div class="chart-header">
+    <div class="chart-header-left">
+      <h3><i class="fas fa-shield-halved text-success"></i> Accounting Governance & Exclusions Compliance</h3>
+      <p>Verification of auditing standards implemented in SQL calculations.</p>
+    </div>
+  </div>
+  <div class="row g-3 small text-muted">
+    <div class="col-md-4">
+      <h6 class="text-white fw-bold mb-1"><i class="fas fa-ban text-danger me-1"></i> 1. Cancellation Exclusion Policy</h6>
+      <p class="mb-0">Orders with status <code>Cancelled</code> are strictly excluded from gross sales, discounts, returns, and order counts as no commercial transfer occurred.</p>
+    </div>
+    <div class="col-md-4">
+      <h6 class="text-white fw-bold mb-1"><i class="fas fa-rotate-left text-warning me-1"></i> 2. Returns Accounting Recognition</h6>
+      <p class="mb-0">Returned orders remain in the <code>valid_orders</code> tally because physical fulfillment took place; returned monetary amounts are credited via <code>total_returns</code>.</p>
+    </div>
+    <div class="col-md-4">
+      <h6 class="text-white fw-bold mb-1"><i class="fas fa-fingerprint text-info me-1"></i> 3. Distinct Order De-Duplication</h6>
+      <p class="mb-0">All order volume counts execute <code>COUNT(DISTINCT order_id)</code> to eliminate artificial inflation across parent-child multi-item joins.</p>
+    </div>
+  </div>
+</div>
+{% endblock %}

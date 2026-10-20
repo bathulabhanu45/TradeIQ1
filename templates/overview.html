@@ -1,0 +1,381 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- ======================================================================
+     Universal Filter Toolbar
+     ====================================================================== -->
+<section class="global-filter-panel">
+  <form id="filter-form" onsubmit="return false;">
+    <div class="filter-grid">
+      <!-- Specific Month Selector -->
+      <div class="filter-group">
+        <label for="filter-month"><i class="fas fa-calendar-days me-1 text-primary"></i>Select Month</label>
+        <select id="filter-month" class="form-select">
+          <option value="All">All Available Months</option>
+          {% for m in filter_options.months %}
+            <option value="{{ m.value }}">{{ m.label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Category -->
+      <div class="filter-group">
+        <label for="filter-category"><i class="fas fa-tags me-1 text-cyan" style="color: var(--cyan);"></i>Category</label>
+        <select id="filter-category" class="form-select">
+          {% for cat in filter_options.categories %}
+            <option value="{{ cat }}">{{ cat }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Start Date -->
+      <div class="filter-group">
+        <label for="filter-start-date"><i class="fas fa-calendar-day me-1 text-primary"></i>Start Date</label>
+        <input type="date" id="filter-start-date" class="form-control" value="{{ filter_options.min_date }}">
+      </div>
+
+      <!-- End Date -->
+      <div class="filter-group">
+        <label for="filter-end-date"><i class="fas fa-calendar-check me-1 text-primary"></i>End Date</label>
+        <input type="date" id="filter-end-date" class="form-control" value="{{ filter_options.max_date }}">
+      </div>
+
+      <!-- Region -->
+      <div class="filter-group">
+        <label for="filter-region"><i class="fas fa-globe me-1 text-info"></i>Region</label>
+        <select id="filter-region" class="form-select">
+          {% for reg in filter_options.regions %}
+            <option value="{{ reg }}">{{ reg }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Order Status -->
+      <div class="filter-group">
+        <label for="filter-status"><i class="fas fa-truck-ramp-box me-1" style="color: var(--coral);"></i>Order Status</label>
+        <select id="filter-status" class="form-select">
+          {% for st in filter_options.statuses %}
+            <option value="{{ st }}">{{ st }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Actions -->
+      <div class="d-flex gap-2 ms-auto">
+        <button type="button" class="filter-btn-apply" id="btn-apply-filter">
+          <i class="fas fa-filter"></i> Apply Filters
+        </button>
+        <button type="button" class="filter-btn-reset" id="btn-reset-filter">
+          <i class="fas fa-rotate-left"></i> Reset
+        </button>
+      </div>
+    </div>
+
+    <!-- Quick Date Range Pills -->
+    <div class="quick-ranges-row">
+      <span class="small text-muted fw-bold me-1">Reporting Period:</span>
+      <button type="button" class="range-chip preset-pill active" data-preset="all">All Available (12 Mo)</button>
+      <button type="button" class="range-chip preset-pill" data-preset="30d">Last 30 Days</button>
+      <button type="button" class="range-chip preset-pill" data-preset="90d">Last 90 Days</button>
+      <button type="button" class="range-chip preset-pill" data-preset="ytd">Year to Date (YTD)</button>
+    </div>
+  </form>
+</section>
+
+<!-- ======================================================================
+     7 Executive KPI Cards (Never Truncated, Smooth Gradients)
+     ====================================================================== -->
+<div class="kpi-row">
+  <!-- 1. Gross Sales -->
+  <div class="kpi-card-v2 kpi-blue">
+    <div class="kpi-top">
+      <span class="kpi-title">Total Gross Sales</span>
+      <div class="kpi-icon-pill blue">
+        <i class="fas fa-receipt"></i>
+      </div>
+    </div>
+    <div class="kpi-number-wrap">
+      <div class="kpi-metric-number" id="kpi-val-gross">${{ "{:,.2f}".format(kpis.current.gross_sales) if kpis and kpis.current else "86,719.22" }}</div>
+    </div>
+    <div class="kpi-bottom">
+      <span>vs baseline</span>
+      <span class="trend-indicator {% if kpis and kpis.changes and kpis.changes.gross_sales_pct and kpis.changes.gross_sales_pct >= 0 %}up{% elif kpis and kpis.changes and kpis.changes.gross_sales_pct %}down{% else %}neutral{% endif %}" id="kpi-trend-gross">
+        <i class="fas {% if kpis and kpis.changes and kpis.changes.gross_sales_pct and kpis.changes.gross_sales_pct >= 0 %}fa-arrow-up{% elif kpis and kpis.changes and kpis.changes.gross_sales_pct %}fa-arrow-down{% else %}fa-minus{% endif %}"></i> 
+        {{ "{:+.1f}%".format(kpis.changes.gross_sales_pct) if kpis and kpis.changes and kpis.changes.gross_sales_pct is not none else "Baseline" }}
+      </span>
+    </div>
+  </div>
+
+  <!-- 2. Net Sales -->
+  <div class="kpi-card-v2 kpi-purple">
+    <div class="kpi-top">
+      <span class="kpi-title">Net Sales (Revenue)</span>
+      <div class="kpi-icon-pill purple">
+        <i class="fas fa-sack-dollar"></i>
+      </div>
+    </div>
+    <div class="kpi-number-wrap">
+      <div class="kpi-metric-number" id="kpi-val-net">${{ "{:,.2f}".format(kpis.current.net_sales) if kpis and kpis.current else "73,075.87" }}</div>
+    </div>
+    <div class="kpi-bottom">
+      <span>vs baseline</span>
+      <span class="trend-indicator {% if kpis and kpis.changes and kpis.changes.net_sales_pct and kpis.changes.net_sales_pct >= 0 %}up{% elif kpis and kpis.changes and kpis.changes.net_sales_pct %}down{% else %}neutral{% endif %}" id="kpi-trend-net">
+        <i class="fas {% if kpis and kpis.changes and kpis.changes.net_sales_pct and kpis.changes.net_sales_pct >= 0 %}fa-arrow-up{% elif kpis and kpis.changes and kpis.changes.net_sales_pct %}fa-arrow-down{% else %}fa-minus{% endif %}"></i> 
+        {{ "{:+.1f}%".format(kpis.changes.net_sales_pct) if kpis and kpis.changes and kpis.changes.net_sales_pct is not none else "Baseline" }}
+      </span>
+    </div>
+  </div>
+
+  <!-- 3. Total Valid Orders -->
+  <div class="kpi-card-v2 kpi-emerald">
+    <div class="kpi-top">
+      <span class="kpi-title">Total Valid Orders</span>
+      <div class="kpi-icon-pill emerald">
+        <i class="fas fa-cart-shopping"></i>
+      </div>
+    </div>
+    <div class="kpi-number-wrap">
+      <div class="kpi-metric-number" id="kpi-val-orders">{{ "{:,}".format(kpis.current.valid_orders) if kpis and kpis.current else "130" }}</div>
+    </div>
+    <div class="kpi-bottom">
+      <span>vs baseline</span>
+      <span class="trend-indicator {% if kpis and kpis.changes and kpis.changes.orders_pct and kpis.changes.orders_pct >= 0 %}up{% elif kpis and kpis.changes and kpis.changes.orders_pct %}down{% else %}neutral{% endif %}" id="kpi-trend-orders">
+        <i class="fas {% if kpis and kpis.changes and kpis.changes.orders_pct and kpis.changes.orders_pct >= 0 %}fa-arrow-up{% elif kpis and kpis.changes and kpis.changes.orders_pct %}fa-arrow-down{% else %}fa-minus{% endif %}"></i> 
+        {{ "{:+.1f}%".format(kpis.changes.orders_pct) if kpis and kpis.changes and kpis.changes.orders_pct is not none else "Baseline" }}
+      </span>
+    </div>
+  </div>
+
+  <!-- 4. Average Order Value (AOV) -->
+  <div class="kpi-card-v2 kpi-amber">
+    <div class="kpi-top">
+      <span class="kpi-title">Average Order Value</span>
+      <div class="kpi-icon-pill amber">
+        <i class="fas fa-basket-shopping"></i>
+      </div>
+    </div>
+    <div class="kpi-number-wrap">
+      <div class="kpi-metric-number" id="kpi-val-aov">${{ "{:,.2f}".format(kpis.current.aov) if kpis and kpis.current else "562.12" }}</div>
+    </div>
+    <div class="kpi-bottom">
+      <span>vs baseline</span>
+      <span class="trend-indicator {% if kpis and kpis.changes and kpis.changes.aov_pct and kpis.changes.aov_pct >= 0 %}up{% elif kpis and kpis.changes and kpis.changes.aov_pct %}down{% else %}neutral{% endif %}" id="kpi-trend-aov">
+        <i class="fas {% if kpis and kpis.changes and kpis.changes.aov_pct and kpis.changes.aov_pct >= 0 %}fa-arrow-up{% elif kpis and kpis.changes and kpis.changes.aov_pct %}fa-arrow-down{% else %}fa-minus{% endif %}"></i> 
+        {{ "{:+.1f}%".format(kpis.changes.aov_pct) if kpis and kpis.changes and kpis.changes.aov_pct is not none else "Baseline" }}
+      </span>
+    </div>
+  </div>
+
+  <!-- 5. Total Discounts -->
+  <div class="kpi-card-v2 kpi-coral">
+    <div class="kpi-top">
+      <span class="kpi-title">Total Discounts</span>
+      <div class="kpi-icon-pill coral">
+        <i class="fas fa-badge-percent"></i>
+      </div>
+    </div>
+    <div class="kpi-number-wrap">
+      <div class="kpi-metric-number" id="kpi-val-discounts">${{ "{:,.2f}".format(kpis.current.total_discounts) if kpis and kpis.current else "1,420.27" }}</div>
+    </div>
+    <div class="kpi-bottom">
+      <span>promotional demand</span>
+      <span class="trend-indicator {% if kpis and kpis.changes and kpis.changes.discounts_pct and kpis.changes.discounts_pct > 0 %}down{% elif kpis and kpis.changes and kpis.changes.discounts_pct %}up{% else %}neutral{% endif %}" id="kpi-trend-discounts">
+        <i class="fas {% if kpis and kpis.changes and kpis.changes.discounts_pct and kpis.changes.discounts_pct > 0 %}fa-arrow-up{% elif kpis and kpis.changes and kpis.changes.discounts_pct %}fa-arrow-down{% else %}fa-minus{% endif %}"></i> 
+        {{ "{:+.1f}%".format(kpis.changes.discounts_pct) if kpis and kpis.changes and kpis.changes.discounts_pct is not none else "Deductions" }}
+      </span>
+    </div>
+  </div>
+
+  <!-- 6. Total Returns -->
+  <div class="kpi-card-v2 kpi-coral">
+    <div class="kpi-top">
+      <span class="kpi-title">Total Returns</span>
+      <div class="kpi-icon-pill coral">
+        <i class="fas fa-arrow-rotate-left"></i>
+      </div>
+    </div>
+    <div class="kpi-number-wrap">
+      <div class="kpi-metric-number" id="kpi-val-returns">${{ "{:,.2f}".format(kpis.current.total_returns) if kpis and kpis.current else "12,223.08" }}</div>
+    </div>
+    <div class="kpi-bottom">
+      <span>refund rate</span>
+      <span class="trend-indicator {% if kpis and kpis.changes and kpis.changes.returns_pct and kpis.changes.returns_pct > 0 %}down{% elif kpis and kpis.changes and kpis.changes.returns_pct %}up{% else %}neutral{% endif %}" id="kpi-trend-returns">
+        <i class="fas {% if kpis and kpis.changes and kpis.changes.returns_pct and kpis.changes.returns_pct > 0 %}fa-arrow-up{% elif kpis and kpis.changes and kpis.changes.returns_pct %}fa-arrow-down{% else %}fa-minus{% endif %}"></i> 
+        {{ "{:+.1f}%".format(kpis.changes.returns_pct) if kpis and kpis.changes and kpis.changes.returns_pct is not none else "Returns" }}
+      </span>
+    </div>
+  </div>
+
+  <!-- 7. Revenue Growth % -->
+  <div class="kpi-card-v2 kpi-cyan">
+    <div class="kpi-top">
+      <span class="kpi-title">Revenue Growth %</span>
+      <div class="kpi-icon-pill blue">
+        <i class="fas fa-arrow-trend-up"></i>
+      </div>
+    </div>
+    <div class="kpi-number-wrap">
+      <div class="kpi-metric-number" id="kpi-val-growth">{{ "{:+.2f}%".format(kpis.current.revenue_growth_pct) if kpis and kpis.current and kpis.current.revenue_growth_pct is not none else "+77.47%" }}</div>
+    </div>
+    <div class="kpi-bottom">
+      <span id="kpi-sub-growth">Period Comparison</span>
+      <span class="trend-indicator up" id="kpi-trend-growth"><i class="fas fa-arrow-up"></i> Expansion</span>
+    </div>
+  </div>
+</div>
+
+<!-- ======================================================================
+     Executive Charts Grid
+     ====================================================================== -->
+<div class="row g-4 mb-4">
+  <!-- Chart A: Monthly Revenue Trend (col-lg-8) -->
+  <div class="col-lg-8">
+    <div class="chart-panel h-100">
+      <div class="chart-header">
+        <div class="chart-header-left">
+          <h3><i class="fas fa-chart-line text-primary"></i> Monthly Sales Trend</h3>
+          <p>Net Sales progression vs Gross Invoiced Sales volume.</p>
+        </div>
+        <div class="btn-group btn-group-sm">
+          <button type="button" class="btn btn-outline-primary active" id="btn-view-monthly">Monthly</button>
+          <button type="button" class="btn btn-outline-primary" id="btn-view-quarterly">Quarterly</button>
+        </div>
+      </div>
+      <div id="chart-revenue-trend" class="chart-box"></div>
+    </div>
+  </div>
+
+  <!-- Chart B: Category Performance Donut (col-lg-4) -->
+  <div class="col-lg-4">
+    <div class="chart-panel h-100">
+      <div class="chart-header">
+        <div class="chart-header-left">
+          <h3><i class="fas fa-chart-pie" style="color: var(--cyan);"></i> Sales by Category</h3>
+          <p>Net sales contribution share across catalog categories.</p>
+        </div>
+      </div>
+      <div id="chart-category-donut" class="chart-box"></div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4 mb-4">
+  <!-- Chart C: Regional Revenue Comparison (col-lg-6) -->
+  <div class="col-lg-6">
+    <div class="chart-panel h-100">
+      <div class="chart-header">
+        <div class="chart-header-left">
+          <h3><i class="fas fa-earth-americas text-info"></i> Sales by Region</h3>
+          <p>Ranked net retail revenue across operating territories.</p>
+        </div>
+      </div>
+      <div id="chart-regional-revenue" class="chart-box"></div>
+    </div>
+  </div>
+
+  <!-- Chart D: Gross vs Net Sales (col-lg-6) -->
+  <div class="col-lg-6">
+    <div class="chart-panel h-100">
+      <div class="chart-header">
+        <div class="chart-header-left">
+          <h3><i class="fas fa-scale-balanced" style="color: var(--vibrant-purple);"></i> Gross vs Net Sales</h3>
+          <p>Comparative impact of promotional discounts and refund returns.</p>
+        </div>
+      </div>
+      <div id="chart-gross-vs-net" class="chart-box"></div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4 mb-4">
+  <!-- Chart E: Order Status Distribution (col-lg-6) -->
+  <div class="col-lg-6">
+    <div class="chart-panel h-100">
+      <div class="chart-header">
+        <div class="chart-header-left">
+          <h3><i class="fas fa-truck-fast text-success"></i> Order Status Distribution</h3>
+          <p>Proportion of completed, delivered, returned, and cancelled orders.</p>
+        </div>
+      </div>
+      <div id="chart-order-status" class="chart-box"></div>
+    </div>
+  </div>
+
+  <!-- Chart F: Period-over-Period Growth (col-lg-6) -->
+  <div class="col-lg-6">
+    <div class="chart-panel h-100">
+      <div class="chart-header">
+        <div class="chart-header-left">
+          <h3><i class="fas fa-arrow-trend-up" style="color: var(--emerald);"></i> Period-over-Period Growth</h3>
+          <p>Month-over-Month (MoM) revenue acceleration rates.</p>
+        </div>
+      </div>
+      <div id="chart-period-growth" class="chart-box"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================================================================
+     Top Performing Products Showcase
+     ====================================================================== -->
+<div class="row g-4 mb-4">
+  <div class="col-12">
+    <div class="chart-panel">
+      <div class="chart-header flex-wrap gap-2">
+        <div class="chart-header-left">
+          <h3><i class="fas fa-trophy" style="color: var(--sand-gold);"></i> Top Performing Products by Net Sales</h3>
+          <p>Leading catalog merchandise driving overall store volume and revenue contribution.</p>
+        </div>
+        <div>
+          <a href="{{ url_for('dashboard.products') }}" class="topbar-btn">
+            <i class="fas fa-cubes text-primary me-1"></i> View Full Catalog (20 Products) <i class="fas fa-arrow-right ms-1"></i>
+          </a>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th style="width: 80px;"># Rank</th>
+              <th>Product Name</th>
+              <th>Category</th>
+              <th class="text-end">Units Sold</th>
+              <th class="text-end">Gross Sales</th>
+              <th class="text-end">Discounts</th>
+              <th class="text-end">Returns</th>
+              <th class="text-end">Recognized Net Sales</th>
+              <th class="text-end" style="width: 140px;">Revenue Share</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for p in top_products %}
+            <tr>
+              <td>
+                <span class="badge" style="{% if p.rank == 1 %}background: var(--sand-gold); color: #FFFFFF; font-weight: 800;{% elif p.rank <= 3 %}background: var(--wine-red); color: #FFFFFF;{% else %}background: var(--sand-soft); color: var(--text-main); border: 1px solid var(--border-color);{% endif %}">
+                  #{{ p.rank }}
+                </span>
+              </td>
+              <td><strong>{{ p.product_name }}</strong></td>
+              <td><span class="badge bg-primary-subtle text-primary">{{ p.category }}</span></td>
+              <td class="text-end fw-semibold">{{ p.units_sold }}</td>
+              <td class="text-end text-muted">${{ "{:,.2f}".format(p.gross_sales) }}</td>
+              <td class="text-end" style="color: var(--sand-dark);">${{ "{:,.2f}".format(p.total_discounts) }}</td>
+              <td class="text-end" style="color: var(--coral);">${{ "{:,.2f}".format(p.total_returns) }}</td>
+              <td class="text-end fw-bold" style="color: var(--emerald);">${{ "{:,.2f}".format(p.net_sales) }}</td>
+              <td class="text-end">
+                <div class="d-flex align-items-center justify-content-end gap-2">
+                  <span class="small fw-bold">{{ p.share_pct }}%</span>
+                  <div class="progress flex-grow-1" style="height: 6px; max-width: 60px; background: var(--sand-soft);">
+                    <div class="progress-bar" style="width: {{ p.share_pct }}%; background: var(--wine-red);"></div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Page Header Callout -->
+<div class="callout-card d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+  <div>
+    <h4 class="fw-bold mb-1" style="color: #FAF8F5;">
+      <i class="fas fa-globe-americas me-2" style="color: var(--sand-gold);"></i>Regional Analytics & Market Penetration
+    </h4>
+    <p class="small mb-0" style="color: rgba(247,244,238,0.75);">Geographic sales distribution, regional order ticket sizes, territory rankings, and expansion opportunities.</p>
+  </div>
+  <div class="d-flex gap-2">
+    <a href="{{ url_for('api.export_csv') }}" class="topbar-btn">
+      <i class="fas fa-file-csv" style="color: var(--sand-gold);"></i> Export Regional CSV
+    </a>
+  </div>
+</div>
+
+<!-- Regional Highlights (Never Truncated) -->
+<div class="kpi-row mb-4">
+  <!-- Leading Region -->
+  <div class="kpi-card-v2 kpi-emerald">
+    <div class="kpi-top">
+      <span class="kpi-title">Top Performing Territory</span>
+      <div class="kpi-icon-pill emerald"><i class="fas fa-crown"></i></div>
+    </div>
+    <div class="kpi-number-wrap">
+      <div class="kpi-metric-number" style="font-size: 1.45rem;">
+        {% if regional_data.best_region %}
+          {{ regional_data.best_region.region }}
+        {% else %}
+          N/A
+        {% endif %}
+      </div>
+    </div>
+    <div class="kpi-bottom">
+      <span>Market Leader</span>
+      <strong class="text-success">
+        {% if regional_data.best_region %}
+          ${{ "{:,.2f}".format(regional_data.best_region.net_sales) }} ({{ regional_data.best_region.share_pct }}%)
+        {% else %}
+          $0.00
+        {% endif %}
+      </strong>
+    </div>
+  </div>
+
+  <!-- Lowest Region -->
+  <div class="kpi-card-v2 kpi-coral">
+    <div class="kpi-top">
+      <span class="kpi-title">Lowest Performing Territory</span>
+      <div class="kpi-icon-pill coral"><i class="fas fa-compass"></i></div>
+    </div>
+    <div class="kpi-number-wrap">
+      <div class="kpi-metric-number" style="font-size: 1.45rem;">
+        {% if regional_data.lowest_region %}
+          {{ regional_data.lowest_region.region }}
+        {% else %}
+          N/A
+        {% endif %}
+      </div>
+    </div>
+    <div class="kpi-bottom">
+      <span>Expansion Target</span>
+      <strong style="color: var(--coral);">
+        {% if regional_data.lowest_region %}
+          ${{ "{:,.2f}".format(regional_data.lowest_region.net_sales) }} ({{ regional_data.lowest_region.share_pct }}%)
+        {% else %}
+          $0.00
+        {% endif %}
+      </strong>
+    </div>
+  </div>
+
+  <!-- Total Regions Tracked -->
+  <div class="kpi-card-v2 kpi-blue">
+    <div class="kpi-top">
+      <span class="kpi-title">Active Operating Regions</span>
+      <div class="kpi-icon-pill blue"><i class="fas fa-earth-americas"></i></div>
+    </div>
+    <div class="kpi-number-wrap">
+      <div class="kpi-metric-number">{{ regional_data.regions|length }}</div>
+    </div>
+    <div class="kpi-bottom">
+      <span>Coverage</span>
+      <span class="trend-indicator up">100% Active</span>
+    </div>
+  </div>
+
+  <!-- Total Regional Revenue -->
+  <div class="kpi-card-v2 kpi-purple">
+    <div class="kpi-top">
+      <span class="kpi-title">Cumulative Regional Sales</span>
+      <div class="kpi-icon-pill purple"><i class="fas fa-coins"></i></div>
+    </div>
+    <div class="kpi-number-wrap">
+      <div class="kpi-metric-number">${{ "{:,.2f}".format(regional_data.total_revenue) }}</div>
+    </div>
+    <div class="kpi-bottom">
+      <span>Aggregated Turnover</span>
+      <span class="trend-indicator neutral">Global Net</span>
+    </div>
+  </div>
+</div>
+
+<!-- Regional Visualizations Grid -->
+<div class="row g-4 mb-4">
+  <!-- Chart: Regional Net Revenue Comparison -->
+  <div class="col-lg-8">
+    <div class="chart-panel h-100">
+      <div class="chart-header">
+        <div class="chart-header-left">
+          <h3><i class="fas fa-map-location-dot text-info"></i> Regional Revenue Comparison Bar Chart</h3>
+          <p>Territories ranked horizontally by net sales revenue with transaction ticket annotations.</p>
+        </div>
+      </div>
+      <div id="chart-regional-revenue" class="chart-box" style="min-height: 360px;"></div>
+    </div>
+  </div>
+
+  <!-- Territorial Distribution Note -->
+  <div class="col-lg-4">
+    <div class="chart-panel h-100 d-flex flex-column justify-content-between">
+      <div>
+        <div class="chart-header">
+          <div class="chart-header-left">
+            <h3><i class="fas fa-circle-nodes" style="color: var(--wine-red);"></i> Geographic Granularity</h3>
+            <p>Database schema coverage and city data scope.</p>
+          </div>
+        </div>
+        <p class="text-muted small" style="line-height: 1.6;">
+          TradeIQ models global sales territories via the indexed <code>region</code> dimension in the <code>orders</code> table.
+          This enables high-level macro segmentation across <strong>North America, Europe, Asia-Pacific, Latin America, and Middle East</strong>.
+        </p>
+        <div class="p-3 rounded-3 mb-3" style="background: var(--bg-surface-alt); border: 1px solid var(--border-color);">
+          <div class="small fw-bold mb-1" style="color: var(--wine-red);"><i class="fas fa-building me-1" style="color: var(--sand-gold);"></i> City-Level Delivery Tracking:</div>
+          <p class="small text-muted mb-0">
+            Per academic design requirements, city-level logistics details are omitted from the primary sales table to preserve normalization. Granular postal-code routing is scheduled for the supply chain expansion module.
+          </p>
+        </div>
+      </div>
+      <div class="p-3 rounded-3" style="background: rgba(21, 128, 61, 0.1); border: 1px solid rgba(21, 128, 61, 0.25);">
+        <span class="small text-success fw-bold"><i class="fas fa-check-circle me-1"></i> Regional AOV Health:</span>
+        <div class="small text-muted mt-1">Average order basket values remain consistent across all multinational operating zones.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Regional Breakdown Performance Table -->
+<div class="chart-panel mb-4">
+  <div class="chart-header">
+    <div class="chart-header-left">
+      <h3><i class="fas fa-table-list text-info"></i> Geographic Performance Ledger</h3>
+      <p>Comprehensive table comparing transaction count, gross invoiced totals, recognized net sales, and basket value.</p>
+    </div>
+  </div>
+  <div class="table-responsive">
+    <table class="custom-table">
+      <thead>
+        <tr>
+          <th>Sales Territory</th>
+          <th class="text-end">Distinct Orders</th>
+          <th class="text-end">Gross Sales</th>
+          <th class="text-end">Recognized Net Sales</th>
+          <th class="text-end">Average Order Value (AOV)</th>
+          <th class="text-end">Revenue Share (%)</th>
+          <th>Contribution Progress</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for reg in regional_data.regions %}
+        <tr>
+          <td>
+            <strong style="color: var(--wine-red-dark);">
+              <i class="fas fa-location-dot me-2" style="color: var(--sand-gold);"></i>{{ reg.region }}
+            </strong>
+          </td>
+          <td class="text-end">{{ reg.orders }}</td>
+          <td class="text-end text-muted">${{ "{:,.2f}".format(reg.gross_sales) }}</td>
+          <td class="text-end fw-bold" style="color: var(--wine-red);">${{ "{:,.2f}".format(reg.net_sales) }}</td>
+          <td class="text-end">${{ "{:,.2f}".format(reg.aov) }}</td>
+          <td class="text-end">
+            <span class="badge" style="background: rgba(114, 47, 55, 0.12); color: var(--wine-red); border: 1px solid rgba(114, 47, 55, 0.3);">
+              {{ reg.share_pct }}%
+            </span>
+          </td>
+          <td style="min-width: 140px;">
+            <div class="progress" style="height: 6px; background: rgba(114, 47, 55, 0.1);">
+              <div class="progress-bar" style="width: {{ reg.share_pct }}%; background: linear-gradient(90deg, var(--wine-red), var(--sand-gold));"></div>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

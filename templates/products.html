@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Page Header Callout -->
+<div class="callout-card d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+  <div>
+    <h4 class="fw-bold mb-1" style="color: var(--text-main);">
+      <i class="fas fa-tags text-primary me-2"></i>Product & Category Analytics
+    </h4>
+    <p class="text-muted small mb-0">Assessing merchandise velocity, department contribution shares, catalog rankings, and demand distributions.</p>
+  </div>
+  <div class="d-flex gap-2">
+    <a href="{{ url_for('api.export_csv') }}" class="topbar-btn">
+      <i class="fas fa-file-csv text-primary"></i> Export Product CSV
+    </a>
+  </div>
+</div>
+
+<!-- Academic & Accounting Governance Notice (Cost of Goods Sold / Profit Limitation) -->
+<div class="alert alert-dark p-3 rounded-4 mb-4 border" style="background: var(--bg-surface); border-color: var(--border-color) !important; color: var(--text-main);">
+  <div class="d-flex gap-3 align-items-start">
+    <div class="p-2 rounded-3" style="background: rgba(114, 47, 55, 0.1); color: var(--wine-red); font-size: 1.2rem;">
+      <i class="fas fa-circle-info"></i>
+    </div>
+    <div>
+      <h6 class="fw-bold mb-1" style="color: var(--text-main);">Academic Integrity Notice: Profit Calculation Limitation</h6>
+      <p class="small text-muted mb-0" style="line-height: 1.6;">
+        In alignment with strict database design standards, product procurement costs (Cost of Goods Sold / COGS) are not present in the transactional schema. 
+        <strong>TradeIQ strictly computes Net Sales, Gross Sales, and Unit Volumes rather than fabricating speculative profit margins.</strong> 
+        Profit margin analytics will be implemented in Phase 2 when vendor wholesale invoices are linked to catalog items.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- Category Performance Visualizations Grid -->
+<div class="row g-4 mb-4">
+  <!-- Top 10 Products by Net Sales -->
+  <div class="col-lg-7">
+    <div class="chart-panel h-100">
+      <div class="chart-header">
+        <div class="chart-header-left">
+          <h3><i class="fas fa-trophy" style="color: #F59E0B;"></i> Top 10 Products by Net Sales</h3>
+          <p>Highest revenue contributors ranked by recognized net sales volume.</p>
+        </div>
+      </div>
+      <div id="chart-top-products" class="chart-box" style="min-height: 360px;"></div>
+    </div>
+  </div>
+
+  <!-- Category Net Sales Share Donut -->
+  <div class="col-lg-5">
+    <div class="chart-panel h-100">
+      <div class="chart-header">
+        <div class="chart-header-left">
+          <h3><i class="fas fa-pie-chart text-cyan" style="color: var(--cyan);"></i> Category Revenue Contribution</h3>
+          <p>Net sales breakdown across product retail departments.</p>
+        </div>
+      </div>
+      <div id="chart-category-donut" class="chart-box" style="min-height: 360px;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Department Volume & Unit Shares Row -->
+<div class="row g-4 mb-4">
+  <div class="col-12">
+    <div class="chart-panel">
+      <div class="chart-header">
+        <div class="chart-header-left">
+          <h3><i class="fas fa-cubes text-primary"></i> Category Performance Breakdown Summary</h3>
+          <p>Comparative summary of physical items sold, net revenue, and overall business share.</p>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Department / Category</th>
+              <th class="text-end">Units Sold</th>
+              <th class="text-end">Recognized Net Sales</th>
+              <th class="text-end">Revenue Share (%)</th>
+              <th>Demand Health Indicator</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for i in range(category_data.labels|length) %}
+            <tr>
+              <td>
+                <strong style="color: var(--text-main);">
+                  <i class="fas fa-folder me-2 text-primary"></i>{{ category_data.labels[i] }}
+                </strong>
+              </td>
+              <td class="text-end fw-semibold">{{ category_data.units[i] }} units</td>
+              <td class="text-end fw-bold" style="color: var(--wine-red);">${{ "{:,.2f}".format(category_data.net_sales[i]) }}</td>
+              <td class="text-end">
+                <span class="badge" style="background: rgba(114, 47, 55, 0.1); color: var(--wine-red); border: 1px solid rgba(114, 47, 55, 0.25);">
+                  {{ category_data.shares[i] }}%
+                </span>
+              </td>
+              <td>
+                <div class="progress" style="height: 6px; background: var(--sand-soft);">
+                  <div class="progress-bar" style="width: {{ category_data.shares[i] }}%; background: var(--wine-red);"></div>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Interactive Product Ranking & Searchable Table -->
+<div class="chart-panel mb-4">
+  <div class="chart-header flex-wrap gap-3">
+    <div class="chart-header-left">
+      <h3><i class="fas fa-list-check text-info"></i> Full Catalog Performance Ranking Table</h3>
+      <p>Search, sort, and inspect line-item performance, discount impact, and returns across all products.</p>
+    </div>
+    <!-- Search & Filter Controls for Table -->
+    <div class="d-flex gap-2">
+      <input type="text" id="table-search-input" class="form-control form-control-sm" placeholder="Search product name..." style="background: var(--bg-surface-alt); border-color: var(--border-color); color: var(--text-main); min-width: 200px;">
+      <select id="table-category-filter" class="form-select form-select-sm" style="background: var(--bg-surface-alt); border-color: var(--border-color); color: var(--text-main); width: 160px;">
+        <option value="">All Categories</option>
+        {% for cat in filter_options.categories %}
+          {% if cat != 'All' %}
+            <option value="{{ cat }}">{{ cat }}</option>
+          {% endif %}
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+  <div class="table-responsive">
+    <table class="custom-table" id="products-catalog-table">
+      <thead>
+        <tr>
+          <th># Rank</th>
+          <th>Product Name</th>
+          <th>Category</th>
+          <th class="text-end">Units Sold</th>
+          <th class="text-end">Gross Sales</th>
+          <th class="text-end">Discounts</th>
+          <th class="text-end">Returns</th>
+          <th class="text-end">Net Sales</th>
+          <th class="text-end">Avg Price</th>
+          <th class="text-end">Revenue Share</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in products_table %}
+        <tr data-name="{{ p.product_name|lower }}" data-cat="{{ p.category }}">
+          <td><span class="badge bg-secondary-subtle text-secondary">{{ p.rank }}</span></td>
+          <td><strong>{{ p.product_name }}</strong></td>
+          <td><span class="badge bg-primary-subtle text-primary">{{ p.category }}</span></td>
+          <td class="text-end">{{ p.units_sold }}</td>
+          <td class="text-end text-muted">${{ "{:,.2f}".format(p.gross_sales) }}</td>
+          <td class="text-end" style="color: #F59E0B;">${{ "{:,.2f}".format(p.total_discounts) }}</td>
+          <td class="text-end" style="color: var(--coral);">${{ "{:,.2f}".format(p.total_returns) }}</td>
+          <td class="text-end fw-bold" style="color: var(--emerald);">${{ "{:,.2f}".format(p.net_sales) }}</td>
+          <td class="text-end">${{ "{:,.2f}".format(p.avg_price) }}</td>
+          <td class="text-end fw-semibold text-info">{{ p.share_pct }}%</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  // Real-time filtering for Product Catalog Table
+  document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('table-search-input');
+    const catFilter = document.getElementById('table-category-filter');
+    const tableRows = document.querySelectorAll('#products-catalog-table tbody tr');
+
+    function filterTable() {
+      const query = (searchInput?.value || '').toLowerCase().trim();
+      const selectedCat = (catFilter?.value || '');
+
+      tableRows.forEach(row => {
+        const name = row.getAttribute('data-name') || '';
+        const cat = row.getAttribute('data-cat') || '';
+        const matchesName = !query || name.includes(query);
+        const matchesCat = !selectedCat || cat === selectedCat;
+        row.style.display = (matchesName && matchesCat) ? '' : 'none';
+      });
+    }
+
+    searchInput?.addEventListener('input', filterTable);
+    catFilter?.addEventListener('change', filterTable);
+  });
+</script>
+{% endblock %}

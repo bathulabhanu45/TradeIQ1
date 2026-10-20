@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Page Header Callout -->
+<div class="callout-card d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+  <div>
+    <h4 class="fw-bold mb-1" style="color: #FAF8F5;">
+      <i class="fas fa-boxes-packing me-2" style="color: var(--sand-gold);"></i>Order & Fulfillment Analytics
+    </h4>
+    <p class="small mb-0" style="color: rgba(247,244,238,0.75);">Pipeline tracking, fulfillment success rates, cancellation leakages, and customer return rates.</p>
+  </div>
+  <div class="d-flex gap-2">
+    <a href="{{ url_for('api.export_csv') }}" class="topbar-btn">
+      <i class="fas fa-file-csv" style="color: var(--sand-gold);"></i> Export Order CSV
+    </a>
+  </div>
+</div>
+
+<!-- Customer Privacy Governance Banner -->
+<div class="alert p-3 rounded-4 mb-4" style="background: linear-gradient(135deg, rgba(114,47,55,0.08) 0%, rgba(200,162,106,0.08) 100%); border: 1px solid rgba(114,47,55,0.2);">
+  <div class="d-flex gap-3 align-items-center">
+    <div class="p-2 rounded-3" style="background: rgba(114, 47, 55, 0.12); color: var(--wine-red); font-size: 1.2rem;">
+      <i class="fas fa-user-shield"></i>
+    </div>
+    <div>
+      <h6 class="fw-bold mb-0" style="color: var(--wine-red);">Data Privacy & Customer Security Standards</h6>
+      <p class="small text-muted mb-0">
+        In compliance with global data privacy frameworks (GDPR / CCPA), TradeIQ does not expose personally identifiable customer records (PII). All metrics represent aggregated operational pipelines.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- Order Performance KPI Scorecards (Never Truncated) -->
+<div class="kpi-row mb-4">
+  <!-- Valid Orders -->
+  <div class="kpi-card-v2 kpi-emerald">
+    <div class="kpi-top">
+      <span class="kpi-title">Valid Completed Orders</span>
+      <div class="kpi-icon-pill emerald"><i class="fas fa-check-double"></i></div>
+    </div>
+    <div class="kpi-number-wrap">
+      <div class="kpi-metric-number">{{ order_data.valid_orders }}</div>
+    </div>
+    <div class="kpi-bottom">
+      <span>Fulfillment Rate:</span>
+      <strong class="text-success">{{ order_data.fulfillment_rate }}%</strong>
+    </div>
+  </div>
+
+  <!-- Average Order Value -->
+  <div class="kpi-card-v2 kpi-amber">
+    <div class="kpi-top">
+      <span class="kpi-title">Average Order Value</span>
+      <div class="kpi-icon-pill amber"><i class="fas fa-basket-shopping"></i></div>
+    </div>
+    <div class="kpi-number-wrap">
+      <div class="kpi-metric-number">${{ "{:,.2f}".format(kpis.current.aov) }}</div>
+    </div>
+    <div class="kpi-bottom">
+      <span>Per valid order</span>
+      <span class="trend-indicator up">Healthy Basket</span>
+    </div>
+  </div>
+
+  <!-- Cancelled Orders -->
+  <div class="kpi-card-v2 kpi-coral">
+    <div class="kpi-top">
+      <span class="kpi-title">Cancelled Orders</span>
+      <div class="kpi-icon-pill coral"><i class="fas fa-ban"></i></div>
+    </div>
+    <div class="kpi-number-wrap">
+      <div class="kpi-metric-number">{{ order_data.cancelled_count }}</div>
+    </div>
+    <div class="kpi-bottom">
+      <span>Cancellation Rate:</span>
+      <strong style="color: var(--coral);">{{ order_data.cancellation_rate }}%</strong>
+    </div>
+  </div>
+
+  <!-- Customer Returns -->
+  <div class="kpi-card-v2 kpi-purple">
+    <div class="kpi-top">
+      <span class="kpi-title">Customer Returns</span>
+      <div class="kpi-icon-pill purple"><i class="fas fa-arrow-rotate-left"></i></div>
+    </div>
+    <div class="kpi-number-wrap">
+      <div class="kpi-metric-number">{{ order_data.returned_count }}</div>
+    </div>
+    <div class="kpi-bottom">
+      <span>Return Rate:</span>
+      <strong style="color: var(--vibrant-purple);">{{ order_data.return_rate }}%</strong>
+    </div>
+  </div>
+</div>
+
+<!-- Order Analytics Charts Grid -->
+<div class="row g-4 mb-4">
+  <!-- Chart 1: Order Status Distribution Donut -->
+  <div class="col-lg-5">
+    <div class="chart-panel h-100">
+      <div class="chart-header">
+        <div class="chart-header-left">
+          <h3><i class="fas fa-chart-pie text-primary"></i> Order Status Distribution</h3>
+          <p>Breakdown across Completed, Delivered, Returned, Cancelled, and Processing.</p>
+        </div>
+      </div>
+      <div id="chart-order-status" class="chart-box" style="min-height: 350px;"></div>
+    </div>
+  </div>
+
+  <!-- Chart 2: Monthly Order Volume Breakdown -->
+  <div class="col-lg-7">
+    <div class="chart-panel h-100">
+      <div class="chart-header">
+        <div class="chart-header-left">
+          <h3><i class="fas fa-bars-staggered" style="color: var(--cyan);"></i> Operational Status Volume Breakdown</h3>
+          <p>Detailed distribution of active vs inactive orders in the database.</p>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table class="custom-table mt-2">
+          <thead>
+            <tr>
+              <th>Order Status</th>
+              <th class="text-end">Order Count</th>
+              <th class="text-end">Share of Total</th>
+              <th>Accounting Treatment</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="badge bg-success-subtle text-success me-2">Completed</span> Fully Settled</td>
+              <td class="text-end fw-bold">{{ order_data.completed_count }}</td>
+              <td class="text-end">{{ "{:.1f}%".format(order_data.completed_count / order_data.total_orders * 100) if order_data.total_orders > 0 else "0.0%" }}</td>
+              <td><small class="text-muted">Included in Net Sales & Valid Orders</small></td>
+            </tr>
+            <tr>
+              <td><span class="badge bg-info-subtle text-info me-2">Delivered</span> Customer Received</td>
+              <td class="text-end fw-bold">{{ order_data.delivered_count }}</td>
+              <td class="text-end">{{ "{:.1f}%".format(order_data.delivered_count / order_data.total_orders * 100) if order_data.total_orders > 0 else "0.0%" }}</td>
+              <td><small class="text-muted">Included in Net Sales & Valid Orders</small></td>
+            </tr>
+            <tr>
+              <td><span class="badge bg-warning-subtle text-warning me-2">Returned</span> Refund Processed</td>
+              <td class="text-end fw-bold">{{ order_data.returned_count }}</td>
+              <td class="text-end">{{ "{:.1f}%".format(order_data.returned_count / order_data.total_orders * 100) if order_data.total_orders > 0 else "0.0%" }}</td>
+              <td><small class="text-muted">Retained in Valid Orders; Refund deducted</small></td>
+            </tr>
+            <tr>
+              <td><span class="badge bg-danger-subtle text-danger me-2">Cancelled</span> Aborted Order</td>
+              <td class="text-end fw-bold" style="color: var(--coral);">{{ order_data.cancelled_count }}</td>
+              <td class="text-end" style="color: var(--coral);">{{ "{:.1f}%".format(order_data.cancelled_count / order_data.total_orders * 100) if order_data.total_orders > 0 else "0.0%" }}</td>
+              <td><small class="text-danger fw-semibold">Strictly EXCLUDED from Sales KPIs</small></td>
+            </tr>
+            <tr>
+              <td><span class="badge bg-primary-subtle text-primary me-2">Processing</span> Fulfillment Queue</td>
+              <td class="text-end fw-bold">{{ order_data.processing_count }}</td>
+              <td class="text-end">{{ "{:.1f}%".format(order_data.processing_count / order_data.total_orders * 100) if order_data.total_orders > 0 else "0.0%" }}</td>
+              <td><small class="text-muted">Included in current period pipeline</small></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Monthly Order Volume & AOV Trajectory -->
+<div class="chart-panel mb-4">
+  <div class="chart-header">
+    <div class="chart-header-left">
+      <h3><i class="fas fa-calendar-days text-primary"></i> Monthly Order Volume & Basket Size Progression</h3>
+      <p>Tracking valid orders and average order ticket size trajectory across billing months.</p>
+    </div>
+  </div>
+  <div class="table-responsive">
+    <table class="custom-table">
+      <thead>
+        <tr>
+          <th>Month</th>
+          <th class="text-end">Total Orders</th>
+          <th class="text-end">Valid Orders</th>
+          <th class="text-end">Cancelled Orders</th>
+          <th class="text-end">Average Order Value (AOV)</th>
+          <th>Fulfillment Quality</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for i in range(order_data.monthly_trend.periods|length) %}
+        <tr>
+          <td><strong>{{ order_data.monthly_trend.periods[i] }}</strong></td>
+          <td class="text-end">{{ order_data.monthly_trend.total_orders[i] }}</td>
+          <td class="text-end fw-bold text-success">{{ order_data.monthly_trend.valid_orders[i] }}</td>
+          <td class="text-end" style="color: var(--coral);">{{ order_data.monthly_trend.cancelled_orders[i] }}</td>
+          <td class="text-end fw-bold" style="color: var(--wine-red);">${{ "{:,.2f}".format(order_data.monthly_trend.aov[i]) }}</td>
+          <td>
+            {% set valid_p = order_data.monthly_trend.valid_orders[i] %}
+            {% set total_p = order_data.monthly_trend.total_orders[i] %}
+            {% set rate = (valid_p / total_p * 100) if total_p > 0 else 0 %}
+            <span class="badge {% if rate >= 85 %}bg-success-subtle text-success{% else %}bg-warning-subtle text-warning{% endif %}">
+              {{ "{:.1f}%".format(rate) }} Success
+            </span>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
